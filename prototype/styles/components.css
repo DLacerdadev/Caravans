@@ -235,8 +235,7 @@
 /* Post-it manuscrito */
 .postit { position: relative; background: #f0e08f; color: #2a2410;
   padding: 16px 16px 18px; width: min(250px, 100%); transform: rotate(1.6deg);
-  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", var(--font-body);
-  font-size: .96rem; line-height: 1.35;
+  font-family: var(--font-hand); font-size: 1.28rem; line-height: 1.2;
   box-shadow: 0 12px 22px -14px rgba(0,0,0,.8); }
 .postit::before { content: ""; position: absolute; top: -7px; left: 20px;
   width: 15px; height: 15px; border-radius: 50%;
@@ -279,7 +278,7 @@
 .qfield:first-of-type { border-top: none; }
 .qfield label { font-family: var(--font-display); font-weight: 600; font-size: .96rem; color: #241d12; }
 .qfield .blank { background: transparent; border: none; border-bottom: 1.5px dashed #7c211c;
-  padding: 7px 2px; color: #241d12; font-family: "Segoe Print", "Bradley Hand", var(--font-body);
-  font-size: .95rem; }
+  padding: 7px 2px; color: #241d12; font-family: var(--font-hand);
+  font-size: 1.2rem; }
 .qfield .blank::placeholder { color: #b09a6a; font-style: italic; }
 .qfield .blank:focus { outline: none; border-bottom-color: #241d12; border-bottom-style: solid; }

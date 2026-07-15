@@ -1,3 +1,7 @@
+/* Fontes de época ("Luz de Gás"): Playfair Display (títulos/jornal),
+   EB Garamond (corpo) e Caveat (manuscrito). Georgia fica como fallback. */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400;700&display=swap');
+
 /* ==========================================================================
    Sobrevivendo ao Horror — Design Tokens
    Conceito "O Limiar": dois modos visuais que mudam conforme o estado de jogo.
@@ -8,9 +12,10 @@
    ========================================================================== */
 
 :root {
-  /* ---- Tipografia (pilhas de sistema; trocar por webfonts na build real) --- */
-  --font-display: Georgia, "Iowan Old Style", "Times New Roman", serif;
-  --font-body:    Georgia, "Times New Roman", serif;
+  /* ---- Tipografia (webfonts de época + fallback de sistema) --------------- */
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body:    "EB Garamond", Georgia, "Times New Roman", serif;
+  --font-hand:    "Caveat", "Segoe Print", "Bradley Hand", cursive;
   --font-mono:    "Courier New", Courier, monospace;
   --font-ui:      system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
