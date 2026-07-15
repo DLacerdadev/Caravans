@@ -45,15 +45,15 @@ SH.CASES = {
       },
       observations: [
         "Agentes estiveram no local. A porta continuava trancada por dentro; a chave, ainda na fechadura.",
-        "Uma vizinha afirma que o carrilhão tocou às 21h47 — a mesma hora em que todos os relógios da oficina pararam.",
-        "Há sangue na parede leste: pouco, e em dois pontos que não se conectam.",
-        "O pó acumulado no batente da janela dos fundos foi perturbado recentemente."
+        "Uma vizinha afirma ter ouvido o carrilhão tocar fora de hora, pouco antes de tudo silenciar.",
+        "Foi recolhido material da parede leste; a análise ainda não foi concluída.",
+        "O pó no batente da janela dos fundos parecia recentemente perturbado."
       ],
       questions: [
-        "Qual seria a motivação para o desaparecimento?",
-        "Como alguém deixa um cômodo trancado por dentro?",
-        "O que os relógios parados às 21h47 tentam dizer?",
-        "Warrick tinha envolvimento com o outro lado?"
+        "Qual a motivação por trás do desaparecimento?",
+        "Quem se beneficiaria com o sumiço de Warrick?",
+        "A cena foi deixada assim de propósito?",
+        "Por onde se entra e se sai sem ser visto?"
       ]
     }
   },
@@ -88,14 +88,14 @@ SH.CASES = {
       },
       observations: [
         "Testemunhas viram a tripulação descer em fila, em silêncio, sem olhar para os lados.",
-        "O manifesto de carga foi rasgado; um único nome, arrancado.",
+        "O manifesto de carga foi encontrado rasgado a bordo.",
         "Médicos não encontram doença nos homens — apenas a mudez.",
         "O porão ainda está alagado, embora não haja rombo no casco."
       ],
       questions: [
-        "O que a carga realmente era?",
-        "A mudez é trauma — ou foi imposta?",
-        "Que nome foi arrancado do manifesto, e por quê?"
+        "O que a tripulação está tentando não contar?",
+        "Quem tinha interesse nessa carga?",
+        "O silêncio é medo, ordem — ou algo pior?"
       ]
     }
   },
@@ -129,14 +129,14 @@ SH.CASES = {
       },
       observations: [
         "A planta de 1864 registra doze cômodos; os moradores contam onze.",
-        "A parede do corredor leste é 40 cm mais grossa que todas as demais.",
+        "O corredor leste parece mais curto do que a planta faz supor.",
         "Objetos deixados no corredor desaparecem — e reaparecem trocados de lugar.",
         "Ninguém soube dizer quem morou na casa entre 1889 e 1890."
       ],
       questions: [
-        "Onde, afinal, está o décimo-segundo cômodo?",
-        "Por que todos os moradores o negam?",
-        "O que entra e sai por aquela parede?"
+        "Em quem se pode confiar nesta casa?",
+        "O que os moradores ganham em negar?",
+        "Desde quando as coisas mudaram por aqui?"
       ]
     }
   },
@@ -169,15 +169,15 @@ SH.CASES = {
         missions: ["O Testamento Vazio"]
       },
       observations: [
-        "Todas as propriedades foram compradas pela mesma firma de fachada.",
-        "O centro geométrico das aquisições é uma capela desativada há décadas.",
+        "As aquisições concentram-se num mesmo quarteirão, em poucas semanas.",
+        "No miolo do quarteirão há um imóvel que a firma ainda não anunciou ter comprado.",
         "As obras no terreno central acontecem apenas depois do anoitecer.",
         "Dois antigos proprietários foram procurados: nenhum foi encontrado."
       ],
       questions: [
-        "O que existe sob a capela?",
-        "Quem, de fato, financia a firma?",
-        "Por que tanta pressa para fechar o quarteirão?"
+        "Qual o verdadeiro objetivo dessas compras?",
+        "Quem está por trás do dinheiro?",
+        "O que justifica tanta pressa?"
       ]
     }
   }
