@@ -27,7 +27,6 @@
       <h1 class="page-title" data-field="name">Caso</h1>
       <div class="row" style="margin:-4px 0 20px">
         <span class="risk" data-field="risk">—</span>
-        <span class="clock" data-field="clock"></span>
       </div>
 
       <div class="case-layout">
@@ -35,7 +34,7 @@
         <section>
           <div class="tabs" role="tablist" aria-label="Seções do caso">
             <button class="tab" role="tab" id="tab-andamento" aria-controls="panel-andamento" aria-selected="true">Andamento</button>
-            <button class="tab" role="tab" id="tab-dicas" aria-controls="panel-dicas" aria-selected="false">Dicas</button>
+            <button class="tab" role="tab" id="tab-quadro" aria-controls="panel-quadro" aria-selected="false">Quadro</button>
             <button class="tab" role="tab" id="tab-pistas" aria-controls="panel-pistas" aria-selected="false">Pistas</button>
             <button class="tab" role="tab" id="tab-fotos" aria-controls="panel-fotos" aria-selected="false">Fotos</button>
           </div>
@@ -53,11 +52,9 @@
             </div>
           </div>
 
-          <div class="tabpanel" role="tabpanel" id="panel-dicas" aria-labelledby="tab-dicas" hidden>
-            <div class="card">
-              <p class="skill-tab" style="margin-top:0">Por onde começar</p>
-              <div data-field="hints"><!-- dicas via JS --></div>
-            </div>
+          <div class="tabpanel" role="tabpanel" id="panel-quadro" aria-labelledby="tab-quadro" hidden>
+            <p class="page-sub" style="margin:0 0 14px">Evidências reunidas até aqui. Elas não dão respostas — apontam para as perguntas certas.</p>
+            <div class="board" data-field="board"><!-- quadro via JS --></div>
           </div>
 
           <div class="tabpanel" role="tabpanel" id="panel-pistas" aria-labelledby="tab-pistas" hidden>
@@ -98,15 +95,52 @@
       var risk = document.querySelector('[data-field="risk"]');
       risk.textContent = riskLabel[c.risk]; risk.className = "risk risk--" + c.risk;
 
-      var segs = "";
-      for (var i = 0; i < c.threatMax; i++) { segs += '<span class="seg' + (i < c.threat ? " on" : "") + '"></span>'; }
-      document.querySelector('[data-field="clock"]').innerHTML = "<small>Ameaça</small>" + segs;
-
       document.querySelector('[data-field="summary"]').textContent = c.summary;
 
-      document.querySelector('[data-field="hints"]').innerHTML = c.hints.map(function (h, i) {
-        return '<div class="hint"><span class="num">' + (i + 1) + '</span><span>' + h + '</span></div>';
+      // ---- Quadro de investigação (evidências indiretas) ----
+      var b = c.board;
+      var esc = function (s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); };
+      var missions = (b.person.missions && b.person.missions.length)
+        ? "Investigou: " + b.person.missions.join(" · ")
+        : "Nenhuma missão registrada";
+      var obs = b.observations.map(function (o) { return '<li class="obs">' + o + "</li>"; }).join("");
+      var qs = b.questions.map(function (q, i) {
+        var saved = localStorage.getItem("sh:" + id + ":q:" + i) || "";
+        return '<div class="qfield"><label for="q' + i + '">' + q + "</label>" +
+               '<input class="blank" id="q' + i + '" data-qnote="' + i + '" placeholder="anotar…" value="' + esc(saved) + '" /></div>';
       }).join("");
+
+      document.querySelector('[data-field="board"]').innerHTML =
+        '<svg class="board__string" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
+          '<path d="M24 58 Q 50 40 74 44" fill="none" stroke="#0d0b08" stroke-width="0.7" stroke-dasharray="1.5 1.2"/>' +
+          '<circle cx="24" cy="58" r="1.3" fill="#7c211c"/><circle cx="74" cy="44" r="1.3" fill="#7c211c"/>' +
+        '</svg>' +
+        '<div class="board__pins">' +
+          '<article class="clip">' +
+            '<p class="clip__source">' + b.clipping.source + "</p>" +
+            '<h4 class="clip__headline">' + b.clipping.headline + "</h4>" +
+            '<p class="clip__excerpt">' + b.clipping.excerpt + "</p>" +
+          "</article>" +
+          '<div class="postit">' + b.postit + "</div>" +
+          '<article class="dossier">' +
+            '<div class="dossier__photo">' + b.person.photo + "</div>" +
+            "<div>" +
+              '<p class="dossier__role">' + b.person.role + "</p>" +
+              '<h4 class="dossier__name">' + b.person.name + "</h4>" +
+              '<p class="dossier__desc">' + b.person.description + "</p>" +
+              '<p class="dossier__missions">' + missions + "</p>" +
+            "</div>" +
+          "</article>" +
+        "</div>" +
+        '<section class="report"><p class="skill-tab" style="margin-top:0">Observações do relatório</p><ul class="obs-list">' + obs + "</ul></section>" +
+        '<section class="questions"><p class="skill-tab" style="margin-top:0">Perguntas em aberto</p>' + qs + "</section>";
+
+      // Persistência das anotações do jogador nas perguntas em aberto.
+      document.querySelectorAll("[data-qnote]").forEach(function (inp) {
+        inp.addEventListener("input", function () {
+          localStorage.setItem("sh:" + id + ":q:" + inp.dataset.qnote, inp.value);
+        });
+      });
 
       document.querySelector('[data-field="photos"]').innerHTML = c.photos.map(function (p) {
         return '<figure class="photo"><div class="photo__img"><span>' + p.icon + '</span></div>' +

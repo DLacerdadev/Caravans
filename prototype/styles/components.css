@@ -180,3 +180,106 @@
   font-family: var(--font-ui); font-size: var(--fs-sm); opacity: 0; pointer-events: none;
   transition: opacity .3s ease, transform .3s ease; z-index: 60; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ==========================================================================
+   Quadro de investigação (mural de evidências)
+   Peças de papel presas por percevejos sobre um quadro escuro; nada é entregue
+   de forma direta — as observações e perguntas provocam questionamento.
+   ========================================================================== */
+.board {
+  position: relative; border-radius: var(--radius-lg);
+  padding: clamp(16px, 3vw, 30px);
+  background-color: #241a12;
+  background-image: radial-gradient(rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 7px 7px;
+  border: 1px solid #12100c;
+  box-shadow: inset 0 0 70px rgba(0,0,0,.65), var(--shadow);
+  overflow: hidden;
+}
+.board__string { position: absolute; inset: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none; }
+.board__pins { position: relative; z-index: 1; display: grid;
+  grid-template-columns: 1fr; gap: clamp(16px, 3vw, 26px); }
+@media (min-width: 620px) {
+  .board__pins { grid-template-columns: 1.05fr .95fr; align-items: start; }
+  .board__pins .clip     { grid-column: 1; grid-row: 1; }
+  .board__pins .postit   { grid-column: 1; grid-row: 2; justify-self: start; }
+  .board__pins .dossier  { grid-column: 2; grid-row: 1 / span 2; align-self: start; }
+}
+@media (max-width: 619px) { .board__string { display: none; } }
+
+/* Percevejo vermelho reutilizável */
+.pinned { position: relative; }
+.pinned::before { content: ""; position: absolute; top: -7px; left: 50%;
+  transform: translateX(-50%); width: 15px; height: 15px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e2726b, #9d2a24 65%, #6f1a16);
+  box-shadow: 0 3px 5px rgba(0,0,0,.55); z-index: 2; }
+
+/* Recorte de jornal */
+.clip { background: #e9e3d2; color: #241d12; padding: 16px 18px 18px;
+  border-radius: 2px; transform: rotate(-1.1deg);
+  box-shadow: 0 12px 26px -14px rgba(0,0,0,.8); }
+.clip::before { content: ""; position: absolute; top: -7px; left: 50%;
+  transform: translateX(-50%); width: 15px; height: 15px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e2726b, #9d2a24 65%, #6f1a16);
+  box-shadow: 0 3px 5px rgba(0,0,0,.55); z-index: 2; }
+.clip__source { font-family: var(--font-mono); font-size: .64rem; letter-spacing: .08em;
+  text-transform: uppercase; color: #7c211c; margin: 0; }
+.clip__headline { font-family: var(--font-display); font-weight: 700; font-size: 1.18rem;
+  line-height: 1.15; margin: 7px 0; padding: 7px 0;
+  border-top: 2px solid #241d12; border-bottom: 1px solid #241d12; }
+.clip__excerpt { font-family: var(--font-body); font-size: .84rem; color: #3a2f1d;
+  margin: 0; column-gap: 16px; }
+@media (min-width: 460px) { .clip__excerpt { column-count: 2; } }
+
+/* Post-it manuscrito */
+.postit { position: relative; background: #f0e08f; color: #2a2410;
+  padding: 16px 16px 18px; width: min(250px, 100%); transform: rotate(1.6deg);
+  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", var(--font-body);
+  font-size: .96rem; line-height: 1.35;
+  box-shadow: 0 12px 22px -14px rgba(0,0,0,.8); }
+.postit::before { content: ""; position: absolute; top: -7px; left: 20px;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #7fb0e0, #2d5f9d 65%, #1c3c66);
+  box-shadow: 0 3px 5px rgba(0,0,0,.55); z-index: 2; }
+
+/* Ficha de pessoa de interesse */
+.dossier { position: relative; display: flex; gap: 14px; background: #efe6d0;
+  color: #241d12; padding: 16px; border-radius: 3px; border: 1px solid #cdbb92;
+  transform: rotate(.5deg); box-shadow: 0 12px 26px -14px rgba(0,0,0,.8); }
+.dossier::before { content: ""; position: absolute; top: -7px; left: 50%;
+  transform: translateX(-50%); width: 15px; height: 15px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e2726b, #9d2a24 65%, #6f1a16);
+  box-shadow: 0 3px 5px rgba(0,0,0,.55); z-index: 2; }
+.dossier__photo { flex: none; width: 66px; height: 80px; border-radius: 2px;
+  display: grid; place-content: center; font-size: 1.9rem;
+  background: linear-gradient(135deg, #6b6152, #2b2620); filter: sepia(.4) contrast(1.05);
+  box-shadow: inset 0 0 0 3px #fff, 0 0 0 1px #cdbb92; }
+.dossier__role { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em;
+  text-transform: uppercase; color: #7c211c; margin: 0; }
+.dossier__name { font-family: var(--font-display); font-size: 1.15rem; margin: 2px 0 6px; }
+.dossier__desc { font-family: var(--font-body); font-size: .84rem; color: #3a2f1d; margin: 0 0 6px; }
+.dossier__missions { font-family: var(--font-ui); font-size: .7rem; letter-spacing: .04em;
+  color: #6a5a3c; margin: 0; }
+
+/* Observações do relatório (indiretas) */
+.board .report, .board .questions { position: relative; z-index: 1; margin-top: clamp(16px,3vw,26px);
+  background: #f6efdb; color: #241d12; border: 1px solid #cdbb92;
+  border-radius: var(--radius-md); padding: 16px 18px; box-shadow: var(--shadow); }
+.obs-list { display: flex; flex-direction: column; }
+.obs { display: flex; gap: 10px; padding: 9px 0; font-family: var(--font-ui);
+  font-size: .86rem; color: #3a2f1d; border-top: 1px dashed #c7b48a; }
+.obs:first-child { border-top: none; }
+.obs::before { content: "obs."; font-family: var(--font-mono); font-size: .64rem;
+  color: #7c211c; font-weight: 700; text-transform: uppercase; margin-top: 2px; flex: none; }
+
+/* Perguntas em aberto — visíveis, mas em branco para o jogador preencher */
+.qfield { display: flex; flex-direction: column; gap: 6px; padding: 12px 0;
+  border-top: 1px dashed #c7b48a; }
+.qfield:first-of-type { border-top: none; }
+.qfield label { font-family: var(--font-display); font-weight: 600; font-size: .96rem; color: #241d12; }
+.qfield .blank { background: transparent; border: none; border-bottom: 1.5px dashed #7c211c;
+  padding: 7px 2px; color: #241d12; font-family: "Segoe Print", "Bradley Hand", var(--font-body);
+  font-size: .95rem; }
+.qfield .blank::placeholder { color: #b09a6a; font-style: italic; }
+.qfield .blank:focus { outline: none; border-bottom-color: #241d12; border-bottom-style: solid; }

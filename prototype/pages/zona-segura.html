@@ -44,15 +44,12 @@
     var riskLabel = { baixo: "Risco baixo", elevado: "Risco elevado", mortal: "Risco mortal" };
     grid.innerHTML = Object.keys(SH.CASES).map(function (id) {
       var c = SH.CASES[id];
-      var segs = "";
-      for (var i = 0; i < c.threatMax; i++) { segs += '<span class="seg' + (i < c.threat ? " on" : "") + '"></span>'; }
       return '' +
         '<article class="mcard">' +
           '<div class="between"><p class="place">' + c.place + '</p>' +
             '<span class="risk risk--' + c.risk + '">' + riskLabel[c.risk] + '</span></div>' +
           '<h3>' + c.name + '</h3>' +
           '<p class="desc">' + c.summary + '</p>' +
-          '<div class="clock"><small>Ameaça</small>' + segs + '</div>' +
           '<div class="actions">' +
             '<a class="btn btn--muted btn--sm" href="caso.html?id=' + id + '">Olhar caso</a>' +
             '<a class="btn btn--primary btn--sm" href="cena.html?id=' + id + '" data-enter data-href="cena.html?id=' + id + '">Entrar na missão</a>' +
