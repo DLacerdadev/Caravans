@@ -98,11 +98,14 @@
   /* ---- Andamento da investigação ---- */
   function refreshProgress(caseId) {
     document.querySelectorAll('[data-progress="' + caseId + '"]').forEach(function (wrap) {
-      var pct = SH.progress(caseId);
-      var bar = wrap.querySelector("i"); if (bar) bar.style.width = pct + "%";
       var lbl = wrap.querySelector("[data-progress-label]");
-      var found = SH.getFound(caseId).length, total = SH.CASES[caseId].clues.length;
-      if (lbl) lbl.textContent = found + " de " + total + " pistas · " + pct + "%";
+      var found = SH.getFound(caseId).length;
+      // Mostra apenas as pistas coletadas — nunca quantas faltam.
+      if (lbl) {
+        lbl.textContent = found === 0
+          ? "Nenhuma pista descoberta"
+          : found + (found === 1 ? " pista descoberta" : " pistas descobertas");
+      }
     });
     document.querySelectorAll("[data-case-history]").forEach(renderHistory);
   }
