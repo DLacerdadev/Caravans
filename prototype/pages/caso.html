@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-mode="safe">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sumário do caso · Sobrevivendo ao Horror</title>
+  <link rel="stylesheet" href="../styles/reset.css" />
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/layout.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <link rel="stylesheet" href="../styles/responsive.css" />
+</head>
+<body>
+  <div class="atmos atmos-safe"></div>
+  <div class="atmos atmos-mission"></div>
+
+  <div class="shell">
+    <header class="appbar">
+      <a class="wordmark" href="zona-segura.html">Sobrevivendo ao <b>Horror</b></a>
+      <span class="mode-chip"><span class="led"></span> Zona Segura · Dossiê do caso</span>
+    </header>
+
+    <main>
+      <a class="btn btn--muted btn--sm" href="zona-segura.html" style="margin-bottom:18px">← Voltar às missões</a>
+
+      <p class="eyebrow" data-field="place">—</p>
+      <h1 class="page-title" data-field="name">Caso</h1>
+      <div class="row" style="margin:-4px 0 20px">
+        <span class="risk" data-field="risk">—</span>
+        <span class="clock" data-field="clock"></span>
+      </div>
+
+      <div class="case-layout">
+        <!-- Coluna principal: abas -->
+        <section>
+          <div class="tabs" role="tablist" aria-label="Seções do caso">
+            <button class="tab" role="tab" id="tab-andamento" aria-controls="panel-andamento" aria-selected="true">Andamento</button>
+            <button class="tab" role="tab" id="tab-dicas" aria-controls="panel-dicas" aria-selected="false">Dicas</button>
+            <button class="tab" role="tab" id="tab-pistas" aria-controls="panel-pistas" aria-selected="false">Pistas</button>
+            <button class="tab" role="tab" id="tab-fotos" aria-controls="panel-fotos" aria-selected="false">Fotos</button>
+          </div>
+
+          <div class="tabpanel" role="tabpanel" id="panel-andamento" aria-labelledby="tab-andamento">
+            <div class="card stack">
+              <p style="margin:0;color:var(--ink-soft)" data-field="summary">—</p>
+              <hr class="divider" style="background:var(--line);margin:6px 0" />
+              <div class="progress" data-progress="">
+                <div class="progress__meta">
+                  <span>Andamento da investigação</span>
+                  <span data-progress-label>—</span>
+                </div>
+                <div class="progress__bar"><i style="width:0%"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tabpanel" role="tabpanel" id="panel-dicas" aria-labelledby="tab-dicas" hidden>
+            <div class="card">
+              <p class="skill-tab" style="margin-top:0">Por onde começar</p>
+              <div data-field="hints"><!-- dicas via JS --></div>
+            </div>
+          </div>
+
+          <div class="tabpanel" role="tabpanel" id="panel-pistas" aria-labelledby="tab-pistas" hidden>
+            <div class="card">
+              <p class="skill-tab" style="margin-top:0">Pistas registradas</p>
+              <div data-case-history=""><!-- histórico via JS --></div>
+            </div>
+          </div>
+
+          <div class="tabpanel" role="tabpanel" id="panel-fotos" aria-labelledby="tab-fotos" hidden>
+            <div class="photos" data-field="photos"><!-- fotos via JS --></div>
+            <p class="page-sub" style="margin:16px 0 0;font-size:.72rem">Imagens ilustrativas do protótipo. As fotos reais das cenas entram em <code>assets/</code>.</p>
+          </div>
+        </section>
+
+        <!-- Coluna lateral: ação -->
+        <aside class="card stack">
+          <p class="skill-tab" style="margin-top:0">Pronto para agir?</p>
+          <p style="margin:0;color:var(--ink-soft);font-size:var(--fs-sm)">Ao entrar na missão você cruza o limiar — a zona segura fica para trás.</p>
+          <a class="btn btn--primary btn--block" data-enter data-href="#" id="enterBtn" href="#">Entrar na missão</a>
+          <a class="btn btn--muted btn--block" href="zona-segura.html">Escolher outro caso</a>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../scripts/mock-data.js"></script>
+  <script>
+    (function () {
+      var id = SH.currentCaseId();
+      var c = SH.CASES[id];
+      var riskLabel = { baixo: "Risco baixo", elevado: "Risco elevado", mortal: "Risco mortal" };
+
+      document.title = c.name + " · Sobrevivendo ao Horror";
+      document.querySelector('[data-field="place"]').textContent = c.place;
+      document.querySelector('[data-field="name"]').textContent = c.name;
+
+      var risk = document.querySelector('[data-field="risk"]');
+      risk.textContent = riskLabel[c.risk]; risk.className = "risk risk--" + c.risk;
+
+      var segs = "";
+      for (var i = 0; i < c.threatMax; i++) { segs += '<span class="seg' + (i < c.threat ? " on" : "") + '"></span>'; }
+      document.querySelector('[data-field="clock"]').innerHTML = "<small>Ameaça</small>" + segs;
+
+      document.querySelector('[data-field="summary"]').textContent = c.summary;
+
+      document.querySelector('[data-field="hints"]').innerHTML = c.hints.map(function (h, i) {
+        return '<div class="hint"><span class="num">' + (i + 1) + '</span><span>' + h + '</span></div>';
+      }).join("");
+
+      document.querySelector('[data-field="photos"]').innerHTML = c.photos.map(function (p) {
+        return '<figure class="photo"><div class="photo__img"><span>' + p.icon + '</span></div>' +
+               '<figcaption class="photo__cap">' + p.cap + '</figcaption></figure>';
+      }).join("");
+
+      // Liga os atributos dinâmicos que os scripts genéricos leem.
+      document.querySelector('[data-progress]').setAttribute("data-progress", id);
+      document.querySelector('[data-case-history]').setAttribute("data-case-history", id);
+      var enter = document.getElementById("enterBtn");
+      enter.setAttribute("data-href", "cena.html?id=" + id);
+      enter.setAttribute("href", "cena.html?id=" + id);
+    })();
+  </script>
+  <script src="../scripts/navigation.js"></script>
+  <script src="../scripts/interactions.js"></script>
+</body>
+</html>

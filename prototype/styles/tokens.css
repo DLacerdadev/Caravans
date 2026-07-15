@@ -1,0 +1,114 @@
+/* ==========================================================================
+   Sobrevivendo ao Horror — Design Tokens
+   Conceito "O Limiar": dois modos visuais que mudam conforme o estado de jogo.
+     - [data-mode="safe"]    → "Luz de Gás"  (zona segura / escolha de missão)
+     - [data-mode="mission"] → "Vígil"       (sessão ativa / dentro da missão)
+   Componentes leem sempre das variáveis --xyz; trocar o data-mode troca o tema
+   e permite transicionar a travessia ("O Limiar") suavemente.
+   ========================================================================== */
+
+:root {
+  /* ---- Tipografia (pilhas de sistema; trocar por webfonts na build real) --- */
+  --font-display: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --font-body:    Georgia, "Times New Roman", serif;
+  --font-mono:    "Courier New", Courier, monospace;
+  --font-ui:      system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* ---- Escala tipográfica (1.25 — terça maior) ---------------------------- */
+  --fs-xs: .75rem;
+  --fs-sm: .875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.563rem;
+  --fs-2xl: 1.953rem;
+  --fs-3xl: 2.441rem;
+  --fs-4xl: 3.052rem;
+
+  /* ---- Escala de espaçamento (base 4px) ----------------------------------- */
+  --sp-1: .25rem;
+  --sp-2: .5rem;
+  --sp-3: .75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-8: 3rem;
+  --sp-10: 4rem;
+
+  /* ---- Raios e bordas ----------------------------------------------------- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --border-hair: 1px;
+
+  /* ---- Transição da travessia "O Limiar" ---------------------------------- */
+  --limiar-duration: 900ms;
+  --limiar-ease: cubic-bezier(.4, 0, .2, 1);
+
+  /* ---- Cores semânticas (independentes do accent, valem nos dois modos) ---- */
+  --ok:    #3f6b4a;
+  --warn:  #c58f34;
+  --crit:  #9d2a24;
+}
+
+/* ==========================================================================
+   MODO ZONA SEGURA — "Luz de Gás" (vitoriano ~1890)
+   ========================================================================== */
+[data-mode="safe"] {
+  --bg:        #14100b;   /* breu quente */
+  --bg-glow:   rgba(197, 143, 52, .14);   /* halo de lampião */
+  --panel:     #f6efdb;   /* pergaminho */
+  --panel-2:   #efe6d0;
+  --ink:       #241d12;   /* tinta sobre pergaminho */
+  --ink-soft:  #5a4a2c;
+  --on-bg:     #e4d8bf;   /* texto sobre o breu */
+  --muted:     #9a8a6a;
+  --accent:    #7c211c;   /* oxblood */
+  --accent-2:  #c58f34;   /* latão */
+  --on-accent: #f6efdb;   /* texto sobre o accent */
+  --line:      #cdbb92;
+  --line-on-bg: rgba(228, 216, 191, .16);
+  --shadow:    0 24px 60px -30px rgba(0, 0, 0, .8);
+
+  --font-title: var(--font-display);
+  --font-text:  var(--font-body);
+}
+
+/* ==========================================================================
+   MODO SESSÃO ATIVA — "Vígil" (horror onírico)
+   ========================================================================== */
+[data-mode="mission"] {
+  --bg:        #08090c;   /* vazio */
+  --bg-glow:   rgba(99, 196, 168, .10);   /* luz espectral doentia */
+  --panel:     rgba(255, 255, 255, .035);
+  --panel-2:   rgba(255, 255, 255, .06);
+  --ink:       #c9c6cf;   /* texto sobre o vazio */
+  --ink-soft:  #a6a2b0;
+  --on-bg:     #eae6dc;   /* osso — títulos */
+  --muted:     #7f7b8a;
+  --accent:    #63c4a8;   /* verde espectral */
+  --accent-2:  #8f7bbf;   /* contusão violeta */
+  --on-accent: #08090c;   /* texto sobre o accent (void) */
+  --line:      rgba(99, 196, 168, .22);
+  --line-on-bg: rgba(255, 255, 255, .10);
+  --shadow:    0 24px 60px -20px rgba(0, 0, 0, .95);
+
+  --font-title: var(--font-display);
+  --font-text:  var(--font-ui);
+
+  --blood:     #ab2622;
+}
+
+/* Propriedades que devem transicionar durante a travessia.
+   (backgrounds em gradiente são cross-fade via camadas; cores sólidas transicionam.) */
+[data-mode] {
+  transition:
+    color var(--limiar-duration) var(--limiar-ease),
+    background-color var(--limiar-duration) var(--limiar-ease),
+    border-color var(--limiar-duration) var(--limiar-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --limiar-duration: 1ms; }
+  [data-mode] { transition: none; }
+}

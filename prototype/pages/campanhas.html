@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-mode="safe">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Selecionar campanha · Sobrevivendo ao Horror</title>
+  <link rel="stylesheet" href="../styles/reset.css" />
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/layout.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <link rel="stylesheet" href="../styles/responsive.css" />
+</head>
+<body>
+  <div class="atmos atmos-safe"></div>
+  <div class="atmos atmos-mission"></div>
+
+  <div class="shell">
+    <header class="appbar">
+      <a class="wordmark" href="login.html">Sobrevivendo ao <b>Horror</b></a>
+      <span class="mode-chip"><span class="led"></span> Zona Segura · Luz de Gás</span>
+    </header>
+
+    <main>
+      <p class="eyebrow">Bem-vindo de volta</p>
+      <h1 class="page-title">Selecionar campanha</h1>
+      <p class="page-sub">Cada campanha guarda seu próprio mundo, suas organizações e suas consequências. Escolha onde continuar.</p>
+
+      <div class="grid-cards">
+        <article class="mcard">
+          <div class="between"><p class="place">3 investigadores · ativa</p><span class="risk risk--elevado">Em andamento</span></div>
+          <h3>Os Casos de Baker Street</h3>
+          <p class="desc">Londres, 1891. Uma série de desaparecimentos liga relojoeiros, docas e uma congregação silenciosa.</p>
+          <div class="actions">
+            <a class="btn btn--primary" href="zona-segura.html">Continuar</a>
+            <button class="btn btn--muted" type="button" onclick="SH.toast('Detalhes da campanha — a implementar.')">Detalhes</button>
+          </div>
+        </article>
+
+        <article class="mcard">
+          <div class="between"><p class="place">4 investigadores · pausada</p><span class="risk risk--mortal">Sombria</span></div>
+          <h3>Arquivos de Highgate</h3>
+          <p class="desc">Um bairro onde as plantas das casas não batem com a realidade. A cada sessão, um cômodo a mais.</p>
+          <div class="actions">
+            <a class="btn btn--primary" href="zona-segura.html">Continuar</a>
+            <button class="btn btn--muted" type="button" onclick="SH.toast('Detalhes da campanha — a implementar.')">Detalhes</button>
+          </div>
+        </article>
+
+        <article class="mcard" style="opacity:.75">
+          <div class="between"><p class="place">Nova</p><span class="risk risk--baixo">Rascunho</span></div>
+          <h3>+ Criar nova campanha</h3>
+          <p class="desc">Defina o mundo inicial, os investigadores e o primeiro caso. (A implementar no protótipo.)</p>
+          <div class="actions">
+            <button class="btn btn--ghost" type="button" onclick="SH.toast('Criação de campanha — a implementar.')">Começar</button>
+          </div>
+        </article>
+      </div>
+    </main>
+  </div>
+
+  <script src="../scripts/mock-data.js"></script>
+  <script src="../scripts/navigation.js"></script>
+  <script src="../scripts/interactions.js"></script>
+</body>
+</html>

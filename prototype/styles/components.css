@@ -1,0 +1,182 @@
+/* ==========================================================================
+   Componentes — Sobrevivendo ao Horror
+   Todos leem tokens.css e funcionam nos dois modos (safe / mission).
+   ========================================================================== */
+
+/* ---- Marca e chip de modo ---- */
+.wordmark { font-family: var(--font-display); font-size: 1.15rem;
+  letter-spacing: .02em; color: var(--on-bg); }
+.wordmark b { color: var(--accent-2); font-weight: 600; }
+
+.mode-chip { display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--font-ui); font-size: .66rem; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--muted);
+  border: 1px solid var(--line-on-bg); border-radius: var(--radius-pill);
+  padding: 7px 14px; }
+.mode-chip .led { width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+
+/* ---- Botões ---- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-ui); font-size: .74rem; letter-spacing: .12em;
+  text-transform: uppercase; font-weight: 700; padding: 12px 20px;
+  border-radius: var(--radius-md); transition: transform .16s ease, background .2s ease, border-color .2s ease; }
+.btn:hover { transform: translateY(-2px); }
+.btn--primary { background: var(--accent); color: var(--on-accent); border: 1px solid var(--accent); }
+.btn--ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+.btn--muted { background: transparent; color: var(--muted); border: 1px solid var(--line-on-bg); }
+.btn--muted:hover { color: var(--on-bg); border-color: var(--on-bg); }
+.btn--block { width: 100%; }
+.btn--sm { padding: 9px 14px; font-size: .68rem; }
+
+/* ---- Campos de formulário ---- */
+.field { display: flex; flex-direction: column; gap: 7px; }
+.field label { font-family: var(--font-ui); font-size: .68rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--muted); }
+.field input { background: var(--panel); color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--radius-md); padding: 12px 14px; }
+.field input::placeholder { color: color-mix(in srgb, var(--ink) 45%, transparent); }
+
+/* ---- Cartão genérico ---- */
+.card { background: var(--panel); color: var(--ink); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); padding: var(--sp-5); box-shadow: var(--shadow); }
+
+/* ---- Cartão de missão ---- */
+.mcard { background: var(--panel); color: var(--ink); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 10px; transition: transform .18s ease; }
+.mcard:hover { transform: translateY(-3px); }
+.mcard h3 { font-family: var(--font-title); font-size: var(--fs-lg); color: var(--ink); margin: 0; }
+.mcard .place { font-family: var(--font-ui); font-size: .72rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-soft); margin: 0; }
+.mcard .desc { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--ink-soft); }
+.mcard .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.mcard .actions .btn--primary { background: var(--accent); color: var(--on-accent); }
+
+/* ---- Etiqueta de risco ---- */
+.risk { font-family: var(--font-ui); font-size: .6rem; letter-spacing: .14em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: var(--radius-sm); font-weight: 700; }
+.risk--baixo   { background: var(--ok);   color: #f6efdb; }
+.risk--elevado { background: var(--warn); color: #241d12; }
+.risk--mortal  { background: var(--crit); color: #f6efdb; }
+
+/* ---- Relógio de ameaça ---- */
+.clock { display: flex; align-items: center; gap: 5px; }
+.clock small { font-family: var(--font-ui); font-size: .62rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-soft); }
+.seg { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--crit); }
+.seg.on { background: var(--crit); }
+
+/* ---- Ponto de interesse + pistas ---- */
+.poi { background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius-md); padding: 18px; margin: 16px 0; }
+.poi__top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.poi__badge { font-family: var(--font-ui); font-size: .58rem; letter-spacing: .16em;
+  text-transform: uppercase; background: var(--blood, var(--accent)); color: #eae6dc;
+  padding: 3px 8px; border-radius: var(--radius-sm); }
+.poi h3 { margin: 0; font-family: var(--font-ui); font-size: 1.02rem; color: var(--on-bg); }
+
+.skill-tab { font-family: var(--font-ui); font-size: .62rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--accent); margin: 14px 0 6px; }
+
+.clue { display: flex; gap: 10px; align-items: flex-start; padding: 9px 0;
+  border-top: 1px solid var(--line-on-bg); font-family: var(--font-ui);
+  font-size: var(--fs-sm); color: var(--ink-soft); }
+.clue:first-of-type { border-top: none; }
+.clue .dt { font-family: var(--font-mono); font-weight: 700; font-size: .7rem;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent); padding: 2px 7px; border-radius: var(--radius-sm);
+  white-space: nowrap; margin-top: 1px; }
+.clue.locked { opacity: .5; cursor: pointer; }
+.clue.locked .ct { filter: blur(3px); }
+.clue.locked:hover { opacity: .8; }
+.clue.found { color: var(--on-bg); }
+
+/* ---- Medidores (Estabilidade / Discernimento / Corrupção) ---- */
+.meters { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 18px 0; }
+.meter small { font-family: var(--font-ui); font-size: .6rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 5px; }
+.meter b { font-variant-numeric: tabular-nums; font-family: var(--font-ui);
+  font-size: .8rem; color: var(--on-bg); float: right; }
+.bar { height: 7px; border-radius: var(--radius-pill);
+  background: rgba(255,255,255,.08); overflow: hidden; }
+.bar i { display: block; height: 100%; }
+
+/* ---- Intenção ---- */
+.intent { display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+.status { font-family: var(--font-ui); font-size: .68rem; letter-spacing: .1em;
+  text-transform: uppercase; display: inline-flex; align-items: center; gap: 7px; }
+.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: currentColor; animation: pulse 1.8s ease-in-out infinite; }
+.status--pending  { color: var(--blood, var(--crit)); }
+.status--approved { color: var(--ok); }
+.status--approved::before { animation: none; }
+@keyframes pulse { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+
+/* ---- Abas ---- */
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line-on-bg);
+  margin-bottom: var(--sp-5); }
+.tab { font-family: var(--font-ui); font-size: .72rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); padding: 10px 14px;
+  border-bottom: 2px solid transparent; }
+.tab[aria-selected="true"] { color: var(--on-bg); border-bottom-color: var(--accent); }
+.tabpanel[hidden] { display: none; }
+
+/* ---- "Fotos" do caso (placeholders desenhados via CSS até haver imagens reais) ---- */
+.photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: var(--sp-4); }
+.photo { background: #efe6d0; padding: 8px 8px 30px; border-radius: 3px;
+  box-shadow: var(--shadow); transform: rotate(-1.2deg); transition: transform .18s ease; }
+.photo:nth-child(even) { transform: rotate(1.4deg); }
+.photo:hover { transform: rotate(0) scale(1.03); }
+.photo__img { aspect-ratio: 4/3; border-radius: 2px; position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #6b6152, #2b2620); filter: sepia(.35) contrast(1.05); }
+.photo__img span { position: absolute; inset: 0; display: grid; place-content: center;
+  font-size: 2rem; opacity: .5; }
+.photo__cap { font-family: var(--font-mono); font-size: .68rem; color: #3a2f1d;
+  margin-top: 8px; text-align: center; }
+
+/* ---- Barra de andamento da investigação ---- */
+.progress { display: flex; flex-direction: column; gap: 6px; }
+.progress__bar { height: 10px; border-radius: var(--radius-pill);
+  background: rgba(0,0,0,.25); overflow: hidden; }
+.progress__bar i { display: block; height: 100%; background: var(--accent-2); }
+.progress__meta { display: flex; justify-content: space-between;
+  font-family: var(--font-ui); font-size: .68rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); }
+
+/* ---- Lista de dicas ---- */
+.hint { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line-on-bg);
+  font-family: var(--font-ui); font-size: var(--fs-sm); color: var(--ink-soft); }
+.hint:first-child { border-top: none; }
+.hint .num { font-family: var(--font-mono); color: var(--accent); font-weight: 700; }
+
+/* ---- Chip de investigador (topo) ---- */
+.who { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-ui);
+  font-size: .72rem; color: var(--muted); }
+.who .av { width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent); color: var(--bg); display: grid; place-content: center;
+  font-weight: 700; font-size: .8rem; }
+
+/* ---- Overlay da travessia "O Limiar" ---- */
+.limiar { position: fixed; inset: 0; z-index: 50; display: grid; place-content: center;
+  text-align: center; background: #000; opacity: 0; visibility: hidden;
+  transition: opacity var(--limiar-duration) var(--limiar-ease),
+              visibility var(--limiar-duration) var(--limiar-ease); pointer-events: none; }
+.limiar.active { opacity: 1; visibility: visible; pointer-events: auto; }
+.limiar__t { font-family: Georgia, serif; font-size: clamp(1.6rem,6vw,3rem);
+  letter-spacing: .3em; text-transform: uppercase; color: #63c4a8; opacity: 0;
+  transition: opacity .5s ease .15s; }
+.limiar__s { font-family: system-ui, sans-serif; font-size: .8rem; letter-spacing: .24em;
+  text-transform: uppercase; color: #6b6a72; margin-top: 14px; opacity: 0;
+  transition: opacity .5s ease .35s; }
+.limiar.active .limiar__t, .limiar.active .limiar__s { opacity: 1; }
+.limiar.returning .limiar__t { color: #c58f34; }
+
+/* ---- Toast ---- */
+.toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
+  background: var(--panel); color: var(--ink); border: 1px solid var(--line);
+  border-radius: var(--radius-md); padding: 12px 18px; box-shadow: var(--shadow);
+  font-family: var(--font-ui); font-size: var(--fs-sm); opacity: 0; pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease; z-index: 60; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

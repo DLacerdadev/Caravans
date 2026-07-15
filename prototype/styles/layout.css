@@ -1,0 +1,68 @@
+/* ==========================================================================
+   Layout & atmosfera — Sobrevivendo ao Horror
+   Lê os tokens de tokens.css. O modo é definido em <html data-mode="...">.
+   ========================================================================== */
+
+html[data-mode] {
+  background-color: var(--bg);
+  color: var(--on-bg);
+  font-family: var(--font-text);
+  transition: color var(--limiar-duration) var(--limiar-ease),
+              background-color var(--limiar-duration) var(--limiar-ease);
+}
+
+/* ---- Camadas de atmosfera (cross-fade na travessia "O Limiar") ---- */
+.atmos { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  transition: opacity var(--limiar-duration) var(--limiar-ease); }
+
+.atmos-safe {
+  background:
+    radial-gradient(90% 70% at 78% -5%, rgba(197,143,52,.16), transparent 55%),
+    radial-gradient(60% 50% at 15% 110%, rgba(124,33,28,.14), transparent 60%),
+    #14100b;
+}
+.atmos-mission {
+  background:
+    radial-gradient(80% 60% at 20% 0%, rgba(99,196,168,.12), transparent 55%),
+    radial-gradient(90% 90% at 90% 115%, rgba(56,42,78,.55), transparent 60%),
+    #08090c;
+}
+.atmos-mission::after { content: ""; position: absolute; inset: 0;
+  box-shadow: inset 0 0 160px 40px rgba(0,0,0,.85); }
+
+html[data-mode="safe"]    .atmos-mission { opacity: 0; }
+html[data-mode="mission"] .atmos-safe    { opacity: 0; }
+
+/* ---- Shell ---- */
+.shell { max-width: 980px; margin: 0 auto;
+  padding: clamp(18px,4vw,40px) clamp(16px,4vw,32px) 72px;
+  animation: shell-in .5s var(--limiar-ease) both; }
+.shell--narrow { max-width: 460px; }
+@keyframes shell-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ---- Cabeçalho ---- */
+.appbar { display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap; margin-bottom: clamp(22px,4vw,40px); }
+.appbar__nav { display: flex; align-items: center; gap: 14px; }
+
+/* ---- Pilhas verticais utilitárias ---- */
+.stack   { display: flex; flex-direction: column; gap: var(--sp-4); }
+.stack-2 { display: flex; flex-direction: column; gap: var(--sp-2); }
+.row     { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+.between { display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-3); flex-wrap: wrap; }
+
+/* ---- Grids ---- */
+.grid-cards { display: grid; grid-template-columns: 1fr; gap: var(--sp-4); }
+@media (min-width: 680px) { .grid-cards { grid-template-columns: 1fr 1fr; } }
+
+.page-title { font-family: var(--font-title); font-size: var(--fs-3xl);
+  margin: 0 0 var(--sp-2); color: var(--on-bg); }
+.page-sub { color: var(--muted); max-width: 58ch; margin: 0 0 var(--sp-6);
+  font-family: var(--font-ui); font-size: var(--fs-sm); }
+.eyebrow { font-family: var(--font-ui); font-size: var(--fs-xs);
+  letter-spacing: .28em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 var(--sp-2); }
+
+.divider { height: 1px; background: var(--line-on-bg); margin: var(--sp-6) 0; border: 0; }
+.center-screen { min-height: 100vh; display: grid; place-content: center; }

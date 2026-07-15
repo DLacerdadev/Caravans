@@ -1,0 +1,36 @@
+/* ==========================================================================
+   Responsividade — Sobrevivendo ao Horror  (mobile-first: ajustes por breakpoint)
+   Breakpoints validados: 360 / 390 / 768 / 1024 / 1440
+   ========================================================================== */
+
+/* --- Muito estreito (≤ 380px): reduz medidores para coluna e aperta paddings --- */
+@media (max-width: 380px) {
+  .meters { grid-template-columns: 1fr; }
+  .page-title { font-size: var(--fs-2xl); }
+  .appbar { gap: 10px; }
+  .mode-chip { padding: 6px 11px; letter-spacing: .16em; }
+}
+
+/* --- Celular padrão: cartões e ações empilham --- */
+@media (max-width: 679px) {
+  .grid-cards { grid-template-columns: 1fr; }
+  .mcard .actions { flex-direction: column; align-items: stretch; }
+  .mcard .actions .btn { width: 100%; }
+  .intent { flex-direction: column; align-items: stretch; }
+  .intent .status { justify-content: center; }
+}
+
+/* --- Tablet (≥ 768px): reorganiza a página do caso em duas colunas --- */
+@media (min-width: 768px) {
+  .case-layout { display: grid; grid-template-columns: 1.4fr .9fr; gap: var(--sp-6); align-items: start; }
+}
+
+/* --- Desktop (≥ 1024px): mais respiro --- */
+@media (min-width: 1024px) {
+  .shell { padding-top: clamp(28px, 4vw, 56px); }
+}
+
+/* --- Telas largas (≥ 1440px): limita a largura para leitura confortável --- */
+@media (min-width: 1440px) {
+  .shell { max-width: 1080px; }
+}

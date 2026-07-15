@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-mode="safe">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acesso do Investigador · Sobrevivendo ao Horror</title>
+  <link rel="stylesheet" href="../styles/reset.css" />
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/layout.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <link rel="stylesheet" href="../styles/responsive.css" />
+</head>
+<body>
+  <div class="atmos atmos-safe"></div>
+  <div class="atmos atmos-mission"></div>
+
+  <main class="shell shell--narrow center-screen">
+    <div class="stack" style="width:100%">
+      <div style="text-align:center;margin-bottom:8px">
+        <p class="eyebrow" style="letter-spacing:.34em">Motor Narrativo Operacional</p>
+        <h1 class="page-title" style="font-size:var(--fs-3xl);margin:0">Sobrevivendo<br />ao Horror</h1>
+        <p class="page-sub" style="margin:12px auto 0;max-width:34ch">Acesso do investigador. A luz do lampião ainda o protege — por enquanto.</p>
+      </div>
+
+      <form class="card stack" id="loginForm" novalidate>
+        <div class="field">
+          <label for="usuario">Investigador</label>
+          <input id="usuario" name="usuario" type="text" autocomplete="username"
+                 placeholder="ex.: h.watson" value="h.watson" required />
+        </div>
+        <div class="field">
+          <label for="senha">Senha</label>
+          <input id="senha" name="senha" type="password" autocomplete="current-password"
+                 placeholder="••••••••" value="221b" required />
+        </div>
+        <button type="submit" class="btn btn--primary btn--block">Entrar</button>
+        <p class="page-sub" style="margin:0;text-align:center;font-size:.72rem">
+          Protótipo — acesso simulado, sem servidor real.
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <script src="../scripts/mock-data.js"></script>
+  <script>
+    // Login simulado: qualquer credencial preenchida entra.
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var u = document.getElementById("usuario").value.trim();
+      var s = document.getElementById("senha").value.trim();
+      if (!u || !s) { SH.toast && SH.toast("Preencha usuário e senha."); return; }
+      sessionStorage.setItem("sh:investigador", u);
+      window.location.href = "campanhas.html";
+    });
+  </script>
+  <script src="../scripts/navigation.js"></script>
+  <script src="../scripts/interactions.js"></script>
+</body>
+</html>

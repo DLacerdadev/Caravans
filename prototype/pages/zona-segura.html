@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-mode="safe">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quartel-General · Sobrevivendo ao Horror</title>
+  <link rel="stylesheet" href="../styles/reset.css" />
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/layout.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <link rel="stylesheet" href="../styles/responsive.css" />
+</head>
+<body>
+  <div class="atmos atmos-safe"></div>
+  <div class="atmos atmos-mission"></div>
+
+  <div class="shell">
+    <header class="appbar">
+      <a class="wordmark" href="campanhas.html">Sobrevivendo ao <b>Horror</b></a>
+      <div class="appbar__nav">
+        <span class="who"><span class="av" id="avatar">W</span><span id="whoName">investigador</span></span>
+        <span class="mode-chip"><span class="led"></span> Zona Segura · Luz de Gás</span>
+      </div>
+    </header>
+
+    <main>
+      <p class="eyebrow">Quartel-General · entre sessões</p>
+      <h1 class="page-title">Selecionar missão</h1>
+      <p class="page-sub">Aqui, sob a luz do lampião, o grupo está a salvo. Estude cada caso, pese o risco — e prepare-se, porque ao cruzar o limiar a proteção fica para trás.</p>
+
+      <div class="grid-cards" id="missionGrid"><!-- cartões renderizados via JS --></div>
+    </main>
+  </div>
+
+  <script src="../scripts/mock-data.js"></script>
+  <script>
+    // Nome do investigador (do login simulado)
+    var who = sessionStorage.getItem("sh:investigador") || "investigador";
+    document.getElementById("whoName").textContent = who;
+    document.getElementById("avatar").textContent = who.charAt(0).toUpperCase();
+
+    // Renderiza um cartão por caso, com relógio de ameaça e progresso.
+    var grid = document.getElementById("missionGrid");
+    var riskLabel = { baixo: "Risco baixo", elevado: "Risco elevado", mortal: "Risco mortal" };
+    grid.innerHTML = Object.keys(SH.CASES).map(function (id) {
+      var c = SH.CASES[id];
+      var segs = "";
+      for (var i = 0; i < c.threatMax; i++) { segs += '<span class="seg' + (i < c.threat ? " on" : "") + '"></span>'; }
+      return '' +
+        '<article class="mcard">' +
+          '<div class="between"><p class="place">' + c.place + '</p>' +
+            '<span class="risk risk--' + c.risk + '">' + riskLabel[c.risk] + '</span></div>' +
+          '<h3>' + c.name + '</h3>' +
+          '<p class="desc">' + c.summary + '</p>' +
+          '<div class="clock"><small>Ameaça</small>' + segs + '</div>' +
+          '<div class="actions">' +
+            '<a class="btn btn--muted btn--sm" href="caso.html?id=' + id + '">Olhar caso</a>' +
+            '<a class="btn btn--primary btn--sm" href="cena.html?id=' + id + '" data-enter data-href="cena.html?id=' + id + '">Entrar na missão</a>' +
+          '</div>' +
+        '</article>';
+    }).join("");
+  </script>
+  <script src="../scripts/navigation.js"></script>
+  <script src="../scripts/interactions.js"></script>
+</body>
+</html>

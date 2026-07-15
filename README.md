@@ -1,5 +1,5 @@
 # Motor Narrativo Operacional
-
+Codinome: Caravans
 > Sistema digital para RPG investigativo, sobrenatural e orientado por consequências, construído ao redor de cenas interativas, intenções declarativas e progressão aberta por Caminhos.
 
 > **Status:** projeto em concepção e prototipação. Nomes, quantidades, regras de progressão e elementos de ambientação ainda podem mudar durante os testes.
