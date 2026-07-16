@@ -46,6 +46,9 @@
   --radius-pill: 999px;
   --border-hair: 1px;
 
+  /* ---- Ergonomia de toque ------------------------------------------------- */
+  --tap-min: 44px;
+
   /* ---- Transição da travessia "O Limiar" ---------------------------------- */
   --limiar-duration: 900ms;
   --limiar-ease: cubic-bezier(.4, 0, .2, 1);
@@ -71,6 +74,7 @@
   --accent:    #7c211c;   /* oxblood */
   --accent-2:  #c58f34;   /* latão */
   --on-accent: #f6efdb;   /* texto sobre o accent */
+  --focus:     #d9a441;   /* anel de foco (latão claro: contrasta no breu e no pergaminho) */
   --line:      #cdbb92;
   --line-on-bg: rgba(228, 216, 191, .16);
   --shadow:    0 24px 60px -30px rgba(0, 0, 0, .8);
@@ -94,6 +98,7 @@
   --accent:    #63c4a8;   /* verde espectral */
   --accent-2:  #8f7bbf;   /* contusão violeta */
   --on-accent: #08090c;   /* texto sobre o accent (void) */
+  --focus:     #63c4a8;   /* anel de foco (verde espectral sobre o vazio) */
   --line:      rgba(99, 196, 168, .22);
   --line-on-bg: rgba(255, 255, 255, .10);
   --shadow:    0 24px 60px -20px rgba(0, 0, 0, .95);

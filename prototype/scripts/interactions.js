@@ -3,59 +3,83 @@
    Revelar pistas, enviar intenção, abas do caso, histórico e andamento.
    ========================================================================== */
 (function () {
-  /* ---- Toast ---- */
+  /* ---- Toast (região live única e reutilizável) ---- */
   function toast(msg) {
-    var t = document.createElement("div");
-    t.className = "toast"; t.textContent = msg;
-    document.body.appendChild(t);
+    var t = document.querySelector(".toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.className = "toast";
+      t.setAttribute("role", "status");
+      t.setAttribute("aria-live", "polite");
+      document.body.appendChild(t);
+    }
+    clearTimeout(t._h1); clearTimeout(t._h2);
+    t.textContent = msg;
     requestAnimationFrame(function () { t.classList.add("show"); });
-    setTimeout(function () { t.classList.remove("show"); }, 2400);
-    setTimeout(function () { t.remove(); }, 2800);
+    t._h1 = setTimeout(function () { t.classList.remove("show"); }, 2400);
+    t._h2 = setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 2800);
   }
   window.SH = window.SH || {}; SH.toast = toast;
 
-  /* ---- Abas (página do caso) ---- */
+  /* ---- Abas (padrão ARIA: roving tabindex, setas ativam, Home/End) ---- */
   document.querySelectorAll('[role="tablist"]').forEach(function (list) {
     var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
-    tabs.forEach(function (tab) {
-      tab.addEventListener("click", function () {
-        tabs.forEach(function (t) {
-          t.setAttribute("aria-selected", "false");
-          var p = document.getElementById(t.getAttribute("aria-controls"));
-          if (p) p.hidden = true;
-        });
-        tab.setAttribute("aria-selected", "true");
-        var panel = document.getElementById(tab.getAttribute("aria-controls"));
-        if (panel) panel.hidden = false;
-      });
-      tab.addEventListener("keydown", function (e) {
-        var i = tabs.indexOf(tab);
-        if (e.key === "ArrowRight") { e.preventDefault(); tabs[(i + 1) % tabs.length].focus(); }
-        if (e.key === "ArrowLeft")  { e.preventDefault(); tabs[(i - 1 + tabs.length) % tabs.length].focus(); }
-      });
-    });
-  });
 
-  /* ---- Revelar pista (clique numa pista bloqueada = simular teste bem-sucedido) ---- */
-  document.querySelectorAll("[data-clue]").forEach(function (el) {
-    el.addEventListener("click", function () {
-      if (!el.classList.contains("locked")) return;
-      el.classList.remove("locked"); el.classList.add("found");
-      var caseId = el.dataset.case || (window.SH.currentCaseId && SH.currentCaseId());
-      if (caseId && el.dataset.clue) {
-        SH.addFound(caseId, el.dataset.clue);
-        toast("Pista descoberta e registrada no caso.");
-        refreshProgress(caseId);
+    function select(tab, focus) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        t.tabIndex = on ? 0 : -1;
+        var p = document.getElementById(t.getAttribute("aria-controls"));
+        if (p) p.hidden = !on;
+      });
+      if (focus) {
+        tab.focus();
+        tab.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
       }
+    }
+
+    tabs.forEach(function (tab) {
+      // Inicializa o roving tabindex a partir do aria-selected do HTML.
+      tab.tabIndex = tab.getAttribute("aria-selected") === "true" ? 0 : -1;
+      tab.addEventListener("click", function () { select(tab); });
+      tab.addEventListener("keydown", function (e) {
+        var i = tabs.indexOf(tab), n = tabs.length, dest;
+        if (e.key === "ArrowRight") dest = tabs[(i + 1) % n];
+        else if (e.key === "ArrowLeft") dest = tabs[(i - 1 + n) % n];
+        else if (e.key === "Home") dest = tabs[0];
+        else if (e.key === "End") dest = tabs[n - 1];
+        if (dest) { e.preventDefault(); select(dest, true); }
+      });
     });
   });
 
-  /* ---- Marca as pistas já descobertas ao abrir a cena ---- */
+  /* ---- Revelar pista (clique ou teclado numa pista bloqueada) ---- */
+  function revealClue(el) {
+    if (!el.classList.contains("locked")) return;
+    el.classList.remove("locked");
+    el.classList.add("found", "clue--revealing");
+    el.removeAttribute("role");
+    el.removeAttribute("tabindex");
+    el.removeAttribute("aria-label");
+    var caseId = el.dataset.case || (window.SH.currentCaseId && SH.currentCaseId());
+    if (caseId && el.dataset.clue) {
+      SH.addFound(caseId, el.dataset.clue);
+      toast("Pista descoberta e registrada no caso.");
+      refreshProgress(caseId);
+    }
+  }
   document.querySelectorAll("[data-clue]").forEach(function (el) {
+    // Marca as pistas já descobertas ao abrir a cena.
     var caseId = el.dataset.case || (window.SH.currentCaseId && SH.currentCaseId());
     if (caseId && el.dataset.clue && SH.getFound(caseId).indexOf(el.dataset.clue) !== -1) {
       el.classList.remove("locked"); el.classList.add("found");
+      el.removeAttribute("role"); el.removeAttribute("tabindex"); el.removeAttribute("aria-label");
     }
+    el.addEventListener("click", function () { revealClue(el); });
+    el.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); revealClue(el); }
+    });
   });
 
   /* ---- Enviar intenção ao mestre (simula aprovação após alguns segundos) ---- */
@@ -64,12 +88,12 @@
     btn.addEventListener("click", function () {
       if (!status) return;
       status.textContent = "Aguardando aprovação";
-      status.className = "status status--pending";
-      btn.disabled = true; btn.style.opacity = ".6";
+      status.className = "status status--waiting";
+      btn.disabled = true; btn.classList.add("is-loading");
       setTimeout(function () {
         status.textContent = "Intenção aprovada";
         status.className = "status status--approved";
-        btn.disabled = false; btn.style.opacity = "1";
+        btn.disabled = false; btn.classList.remove("is-loading");
         toast("O mestre aprovou sua intenção.");
       }, 2600);
     });
@@ -95,12 +119,11 @@
   }
   document.querySelectorAll("[data-case-history]").forEach(renderHistory);
 
-  /* ---- Andamento da investigação ---- */
+  /* ---- Andamento da investigação (só pistas coletadas, sem total) ---- */
   function refreshProgress(caseId) {
     document.querySelectorAll('[data-progress="' + caseId + '"]').forEach(function (wrap) {
       var lbl = wrap.querySelector("[data-progress-label]");
       var found = SH.getFound(caseId).length;
-      // Mostra apenas as pistas coletadas — nunca quantas faltam.
       if (lbl) {
         lbl.textContent = found === 0
           ? "Nenhuma pista descoberta"

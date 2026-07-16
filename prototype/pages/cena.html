@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>document.documentElement.classList.add('is-entering');</script>
   <title>Cena investigativa · Sobrevivendo ao Horror</title>
   <link rel="stylesheet" href="../styles/reset.css" />
   <link rel="stylesheet" href="../styles/tokens.css" />
@@ -46,7 +47,7 @@
           <!-- Intenção -->
           <div class="intent">
             <button class="btn btn--ghost" data-intent="#intentStatus">Enviar intenção ao mestre</button>
-            <span class="status status--pending" id="intentStatus">Nenhuma intenção enviada</span>
+            <span class="status status--idle" id="intentStatus">Nenhuma intenção enviada</span>
           </div>
 
           <a class="btn btn--muted" data-return data-href="zona-segura.html" href="zona-segura.html" style="margin-top:26px">← Retornar à zona segura</a>
@@ -82,10 +83,12 @@
         bySkill[skill].forEach(function (clue) {
           var key = SH.clueKey(clue);
           var isFound = found.indexOf(key) !== -1;
-          // As pistas começam bloqueadas; clicar simula um teste bem-sucedido.
-          html += '<div class="clue ' + (isFound ? "found" : "locked") + '" ' +
-                  'data-clue="' + key + '" data-case="' + id + '" ' +
-                  'title="' + (isFound ? "" : "Clique para simular um teste") + '">' +
+          // As pistas começam bloqueadas; clicar/teclar Enter simula um teste bem-sucedido.
+          var lockAttrs = isFound ? "" :
+            ' role="button" tabindex="0" aria-label="Pista bloqueada, dificuldade ' + clue.dt + '. Ativar para testar."' +
+            ' title="Clique ou tecle Enter para simular um teste"';
+          html += '<div class="clue ' + (isFound ? "found" : "locked") + '"' + lockAttrs +
+                  ' data-clue="' + key + '" data-case="' + id + '">' +
                   '<span class="dt">DT ' + clue.dt + '</span>' +
                   '<span class="ct">' + clue.text + '</span></div>';
         });

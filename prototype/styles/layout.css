@@ -11,6 +11,16 @@ html[data-mode] {
               background-color var(--limiar-duration) var(--limiar-ease);
 }
 
+/* Véu de chegada: cada página nasce coberta de preto e revela ao carregar,
+   costurando a travessia "O Limiar" sem flash. O fade é automático via CSS
+   (não depende de JS), então nunca fica preso no preto. */
+html.is-entering::before {
+  content: ""; position: fixed; inset: 0; z-index: 60; background: #000;
+  pointer-events: none;
+  animation: veil-out var(--limiar-duration) var(--limiar-ease) forwards;
+}
+@keyframes veil-out { from { opacity: 1; } to { opacity: 0; } }
+
 /* ---- Camadas de atmosfera (cross-fade na travessia "O Limiar") ---- */
 .atmos { position: fixed; inset: 0; z-index: -1; pointer-events: none;
   transition: opacity var(--limiar-duration) var(--limiar-ease); }
@@ -56,7 +66,8 @@ html[data-mode="mission"] .atmos-safe    { opacity: 0; }
 .grid-cards { display: grid; grid-template-columns: 1fr; gap: var(--sp-4); }
 @media (min-width: 680px) { .grid-cards { grid-template-columns: 1fr 1fr; } }
 
-.page-title { font-family: var(--font-title); font-size: var(--fs-3xl);
+.page-title { font-family: var(--font-title);
+  font-size: clamp(1.953rem, 1.4rem + 2.6vw, 2.441rem);
   margin: 0 0 var(--sp-2); color: var(--on-bg); }
 .page-sub { color: var(--muted); max-width: 58ch; margin: 0 0 var(--sp-6);
   font-family: var(--font-ui); font-size: var(--fs-sm); }
