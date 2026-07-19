@@ -109,6 +109,32 @@
   --blood:     #ab2622;
 }
 
+/* ==========================================================================
+   MODO PAINEL DO MESTRE — "Posto de Comando" (dashboard operacional)
+   Identidade própria: escuro, denso, com acento de latão (autoridade).
+   ========================================================================== */
+[data-mode="master"] {
+  --bg:        #0f1216;   /* ardósia fria */
+  --bg-glow:   rgba(197, 143, 52, .07);
+  --panel:     rgba(255, 255, 255, .04);
+  --panel-2:   rgba(255, 255, 255, .07);
+  --ink:       #d7d9dd;
+  --ink-soft:  #9aa0a8;
+  --on-bg:     #eef0f2;
+  --muted:     #6f757e;
+  --accent:    #c58f34;   /* latão — o operador */
+  --accent-2:  #7c9cb8;   /* aço frio */
+  --on-accent: #0f1216;
+  --focus:     #d9a441;
+  --line:      rgba(255, 255, 255, .12);
+  --line-on-bg: rgba(255, 255, 255, .10);
+  --shadow:    0 24px 60px -30px rgba(0, 0, 0, .9);
+  --blood:     #c0392b;
+
+  --font-title: var(--font-display);
+  --font-text:  var(--font-ui);
+}
+
 /* Propriedades que devem transicionar durante a travessia.
    (backgrounds em gradiente são cross-fade via camadas; cores sólidas transicionam.) */
 [data-mode] {

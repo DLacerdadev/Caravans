@@ -359,3 +359,62 @@
   font-size: 1.2rem; }
 .qfield .blank::placeholder { color: #b09a6a; font-style: italic; }
 .qfield .blank:focus { outline: none; border-bottom-color: #241d12; border-bottom-style: solid; }
+
+/* ==========================================================================
+   Painel do mestre ("Posto de Comando")
+   ========================================================================== */
+.live { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-ui);
+  font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ok); }
+.live::before { content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: currentColor; box-shadow: 0 0 8px currentColor; animation: pulse 1.6s ease-in-out infinite; }
+
+.count-badge { font-family: var(--font-ui); font-size: .7rem; font-weight: 700;
+  background: var(--accent); color: var(--on-accent); border-radius: var(--radius-pill);
+  padding: 2px 9px; vertical-align: middle; margin-left: 6px; font-variant-numeric: tabular-nums; }
+
+.chip { font-family: var(--font-ui); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase;
+  border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 3px 8px; color: var(--ink-soft); }
+
+/* Fila de intenções pendentes */
+.queue { display: flex; flex-direction: column; gap: 12px; }
+.intent-card { display: flex; gap: 14px; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius-md); padding: 14px 16px; transition: opacity .2s ease; }
+.intent-card .who2 { font-family: var(--font-ui); font-size: .64rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--accent); margin: 0; }
+.intent-card h4 { font-family: var(--font-display); font-size: 1.05rem; margin: 3px 0 8px; color: var(--on-bg); }
+.intent-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.io-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.intent-card.resolved { opacity: .45; }
+.intent-card.resolved .io-actions { display: none; }
+.intent-verdict { font-family: var(--font-ui); font-size: .66rem; letter-spacing: .1em;
+  text-transform: uppercase; align-self: center; }
+
+/* Relógios de ameaça (visíveis só ao mestre) */
+.clockrow { display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 0; border-top: 1px solid var(--line); }
+.clockrow:first-child { border-top: none; }
+.clockrow .cname { font-family: var(--font-ui); font-size: .82rem; color: var(--ink); }
+.clockrow .cbits { display: flex; align-items: center; gap: 8px; }
+
+/* O grupo (status resumido) */
+.party-row { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+.party-row:first-child { border-top: none; }
+.party-row .av { width: 40px; height: 40px; flex: none; border-radius: 50%;
+  display: grid; place-content: center; font-size: 1.1rem; background: var(--panel-2); border: 1px solid var(--line); }
+.party-row .pm { flex: 1; min-width: 0; }
+.party-row .nm { font-family: var(--font-ui); font-size: .82rem; color: var(--on-bg); margin: 0 0 6px; }
+.mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.mini small { font-size: .52rem; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); display: block; margin-bottom: 3px; }
+.mini .bar { height: 5px; }
+
+/* Pistas da cena, vistas pelo mestre (DT sempre visível + revelar) */
+.gm-clue { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 9px 0; border-top: 1px solid var(--line); }
+.gm-clue:first-child { border-top: none; }
+.gm-clue .txt { font-family: var(--font-ui); font-size: .84rem; color: var(--ink-soft); }
+.gm-clue .txt .sk { color: var(--accent); font-size: .6rem; letter-spacing: .1em;
+  text-transform: uppercase; margin-right: 6px; }
+.gm-clue.revealed .txt { color: var(--on-bg); }
+.gm-clue .gm-left { display: flex; align-items: baseline; gap: 10px; }

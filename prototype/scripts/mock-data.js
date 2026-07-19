@@ -262,3 +262,26 @@ SH.currentCampaignId = function () {
   var id = new URLSearchParams(location.search).get("id");
   return (id && SH.CAMPAIGNS[id]) ? id : "baker";
 };
+
+/* ==========================================================================
+   Sessão ativa vista pelo mestre (painel de controle)
+   ========================================================================== */
+SH.MASTER = {
+  campaign: "Os Casos de Baker Street",
+  session: 3,
+  sceneCaseId: "relojoeiro",   // a cena ativa reusa as pistas/relógio deste caso
+  party: [
+    { name: "Dra. Adelaide Finch", photo: "🩺", estab: 72, disc: 54, corr: 23 },
+    { name: "Thomas Reyes",        photo: "🕵️", estab: 88, disc: 31, corr: 12 },
+    { name: "Cordelia Vance",      photo: "🔮", estab: 46, disc: 77, corr: 41 }
+  ],
+  intents: [
+    { id: 1, who: "Cordelia Vance", action: "Examinar a marca de sangue em busca de traços rituais", target: "Marca de sangue", skill: "Ocultismo", risk: "elevado" },
+    { id: 2, who: "Thomas Reyes", action: "Forçar a janela dos fundos", target: "Janela dos fundos", skill: "Força", risk: "baixo" },
+    { id: 3, who: "Dra. Adelaide Finch", action: "Interpretar os padrões de respingo", target: "Parede leste", skill: "Investigação", risk: "medio" }
+  ],
+  clocks: [
+    { name: "A Congregação de Ferro", cur: 1, max: 5 },
+    { name: "Influência sobre Marylebone", cur: 2, max: 4 }
+  ]
+};
