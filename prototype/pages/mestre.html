@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script>document.documentElement.classList.add('is-entering');</script>
   <title>Painel do Mestre · Sobrevivendo ao Horror</title>
-  <link rel="stylesheet" href="../styles/reset.css" />
-  <link rel="stylesheet" href="../styles/tokens.css" />
-  <link rel="stylesheet" href="../styles/layout.css" />
-  <link rel="stylesheet" href="../styles/components.css" />
-  <link rel="stylesheet" href="../styles/responsive.css" />
+  <link rel="stylesheet" href="../styles/reset.css?v=7" />
+  <link rel="stylesheet" href="../styles/tokens.css?v=7" />
+  <link rel="stylesheet" href="../styles/layout.css?v=7" />
+  <link rel="stylesheet" href="../styles/components.css?v=7" />
+  <link rel="stylesheet" href="../styles/responsive.css?v=7" />
 </head>
 <body>
   <div class="atmos atmos-master"></div>
@@ -25,12 +25,46 @@
 
     <main>
       <p class="eyebrow" data-field="campaign">—</p>
-      <h1 class="page-title"><span data-field="session">—</span></h1>
-      <p class="page-sub">Cena ativa: <strong data-field="scene" style="color:var(--on-bg)">—</strong>. Tudo nesta tela é visível <em>apenas ao mestre</em> — inclusive relógios e dificuldades ocultas.</p>
+      <h1 class="page-title" data-field="session">—</h1>
+      <p class="page-sub">Cena ativa: <strong data-field="scene" style="color:var(--on-bg)">—</strong>. Tudo aqui é visível <em>apenas ao mestre</em> — relógios, dificuldades e eventos ocultos.</p>
+
+      <!-- Console de tempo -->
+      <section class="timebar" aria-label="Controle de tempo">
+        <div class="tctl">
+          <small>Dia</small>
+          <div class="stepper">
+            <button type="button" data-time="dia" data-d="-1" aria-label="Recuar dia">−</button>
+            <span class="val" data-field="dia">—</span>
+            <button type="button" data-time="dia" data-d="1" aria-label="Avançar dia">+</button>
+          </div>
+        </div>
+        <div class="tctl">
+          <small>Rodada</small>
+          <div class="stepper">
+            <button type="button" data-time="rodada" data-d="-1" aria-label="Recuar rodada">−</button>
+            <span class="val" data-field="rodada">—</span>
+            <button type="button" data-time="rodada" data-d="1" aria-label="Avançar rodada">+</button>
+          </div>
+        </div>
+        <div class="tctl">
+          <small>Fase</small>
+          <button type="button" class="phase-btn" data-field="fase" data-fase>—</button>
+        </div>
+      </section>
 
       <div class="detail-layout">
         <!-- Coluna principal -->
         <div class="stack" style="gap:var(--sp-5)">
+
+          <!-- Cena & mapa -->
+          <section class="card">
+            <h2 class="section-title">Cena &amp; mapa</h2>
+            <div class="scene-pick" data-field="scene-pick"><!-- via JS --></div>
+            <div class="map-thumb" data-field="map"><span class="maplabel">—</span></div>
+            <div class="scene-meta" data-field="scene-meta"><!-- via JS --></div>
+            <h3 class="skill-tab" style="margin:6px 0 8px">Criaturas no mapa</h3>
+            <div class="creatures" data-field="creatures"><!-- via JS --></div>
+          </section>
 
           <!-- Intenções pendentes -->
           <section class="card">
@@ -41,16 +75,24 @@
             <p class="page-sub" data-field="queue-empty" style="margin:0;display:none">Nenhuma intenção aguardando. O grupo está deliberando.</p>
           </section>
 
-          <!-- Cena ativa: pistas e DTs -->
+          <!-- Pistas da cena ativa -->
           <section class="card">
-            <h2 class="section-title">Cena ativa · pistas e dificuldades</h2>
-            <p class="page-sub" style="margin:-4px 0 12px">Ponto de interesse: <strong data-field="poi" style="color:var(--on-bg)">—</strong></p>
+            <h2 class="section-title">Pistas &amp; dificuldades da cena</h2>
             <div data-field="gm-clues"><!-- via JS --></div>
           </section>
         </div>
 
         <!-- Coluna lateral -->
         <aside class="stack" style="gap:var(--sp-4)">
+          <!-- Eventos & condições -->
+          <section class="card">
+            <h2 class="section-title">Disparar evento</h2>
+            <div class="event-grid" data-field="events"><!-- via JS --></div>
+            <h3 class="skill-tab" style="margin:16px 0 0">Condições ativas</h3>
+            <div class="conditions" data-field="conditions"><!-- via JS --></div>
+            <p class="cond-empty" data-field="conditions-empty">Nenhuma condição em vigor.</p>
+          </section>
+
           <!-- Relógios de ameaça -->
           <section class="card">
             <h2 class="section-title">Relógios de ameaça</h2>
@@ -62,140 +104,220 @@
             <h2 class="section-title">O grupo</h2>
             <div data-field="party"><!-- via JS --></div>
           </section>
-
-          <!-- Controles de sessão -->
-          <section class="card stack">
-            <h2 class="section-title" style="margin:0">Controles</h2>
-            <button class="btn btn--ghost btn--block" data-ctrl="Tempo avançado.">Avançar o tempo</button>
-            <button class="btn btn--ghost btn--block" data-ctrl="Evento disparado na cena.">Disparar evento</button>
-            <button class="btn btn--ghost btn--block" data-ctrl="Transição de cena preparada.">Trocar de cena</button>
-            <button class="btn btn--muted btn--block" data-ctrl="Sessão encerrada.">Encerrar sessão</button>
-          </section>
         </aside>
       </div>
     </main>
   </div>
 
-  <script src="../scripts/mock-data.js"></script>
+  <script src="../scripts/mock-data.js?v=7"></script>
   <script>
     (function () {
       var M = SH.MASTER;
-      var c = SH.CASES[M.sceneCaseId];
       var riskLabel = { baixo: "Risco baixo", medio: "Risco médio", elevado: "Risco elevado" };
+      var q = function (s) { return document.querySelector(s); };
+      var activeConditions = []; // eventos em vigor
 
-      document.querySelector('[data-field="campaign"]').textContent = M.campaign;
-      document.querySelector('[data-field="session"]').textContent = "Sessão " + M.session;
-      document.querySelector('[data-field="scene"]').textContent = c.name;
-      document.querySelector('[data-field="poi"]').textContent = c.poi;
+      q('[data-field="campaign"]').textContent = M.campaign;
+      q('[data-field="session"]').textContent = "Sessão " + M.session;
 
-      /* ---- Intenções pendentes ---- */
-      var queue = document.querySelector('[data-field="queue"]');
-      var countEl = document.querySelector('[data-field="count"]');
-      var emptyEl = document.querySelector('[data-field="queue-empty"]');
+      /* ================= CONTROLE DE TEMPO ================= */
+      function renderTime() {
+        q('[data-field="dia"]').textContent = M.time.dia;
+        q('[data-field="rodada"]').textContent = M.time.rodada;
+        q('[data-field="fase"]').textContent = M.fases[M.time.faseIndex];
+      }
+      document.querySelectorAll('[data-time]').forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var key = btn.dataset.time, d = parseInt(btn.dataset.d, 10);
+          M.time[key] = Math.max(key === "dia" ? 1 : 0, M.time[key] + d);
+          renderTime();
+          SH.toast((d > 0 ? "Avançou" : "Recuou") + " " + key + " → " + M.time[key] + ".");
+        });
+      });
+      q('[data-fase]').addEventListener("click", function () {
+        M.time.faseIndex = (M.time.faseIndex + 1) % M.fases.length;
+        renderTime();
+        SH.toast("Fase: " + M.fases[M.time.faseIndex] + ".");
+      });
+      renderTime();
 
+      /* ================= CENA & MAPA ================= */
+      function activeScene() { return M.scenes.filter(function (s) { return s.id === M.activeSceneId; })[0]; }
+
+      function effectiveVisibility(scene) {
+        var vis = scene.visibility, byEvent = false;
+        activeConditions.forEach(function (ev) { if (ev.visibility) { vis = ev.visibility; byEvent = true; } });
+        return { vis: vis, byEvent: byEvent };
+      }
+
+      function renderScenePick() {
+        q('[data-field="scene-pick"]').innerHTML = M.scenes.map(function (s) {
+          return '<button type="button" data-scene="' + s.id + '"' +
+                 (s.id === M.activeSceneId ? ' class="is-active"' : "") + '>' + s.name + '</button>';
+        }).join("");
+      }
+
+      function renderScene() {
+        var s = activeScene();
+        q('[data-field="scene"]').textContent = s.name;
+
+        var map = q('[data-field="map"]');
+        map.className = "map-thumb map--" + s.mapKind;
+        map.innerHTML = '<span class="maplabel">' + s.map + '</span>';
+
+        var vis = effectiveVisibility(s);
+        q('[data-field="scene-meta"]').innerHTML =
+          '<span class="meta-pill' + (vis.byEvent ? " alert" : "") + '">Visibilidade <b>' + vis.vis + (vis.byEvent ? " · evento" : "") + '</b></span>' +
+          '<span class="meta-pill">Clima <b>' + s.weather + '</b></span>' +
+          '<span class="meta-pill">Mapa <b>' + s.map + '</b></span>';
+
+        renderCreatures();
+        renderClues();
+      }
+
+      function renderCreatures() {
+        var s = activeScene();
+        q('[data-field="creatures"]').innerHTML = s.creatures.map(function (cr, i) {
+          var tok = cr.hidden
+            ? '<span class="tok tok--oculto">Oculto</span>'
+            : '<span class="tok tok--visivel">Visível</span>';
+          return '<div class="creature"><span class="cinfo">' + tok + cr.name + '</span>' +
+            '<button class="btn btn--sm btn--muted" data-creature="' + i + '">' + (cr.hidden ? "Revelar" : "Ocultar") + '</button></div>';
+        }).join("");
+      }
+      q('[data-field="creatures"]').addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-creature]"); if (!btn) return;
+        var s = activeScene(), cr = s.creatures[+btn.dataset.creature];
+        cr.hidden = !cr.hidden;
+        renderCreatures();
+        SH.toast(cr.hidden ? "Criatura ocultada." : "Criatura revelada aos jogadores.");
+      });
+
+      function renderClues() {
+        var s = activeScene();
+        var box = q('[data-field="gm-clues"]');
+        if (!s.caseId || !SH.CASES[s.caseId]) {
+          box.innerHTML = '<p class="page-sub" style="margin:0">Sem pistas mapeadas nesta cena.</p>';
+          return;
+        }
+        box.innerHTML = SH.CASES[s.caseId].clues.map(function (clue, i) {
+          return '<div class="gm-clue" data-i="' + i + '">' +
+            '<div class="gm-left"><span class="dt">DT ' + clue.dt + '</span>' +
+            '<span class="txt"><span class="sk">' + clue.skill + '</span>' + clue.text + '</span></div>' +
+            '<button class="btn btn--sm btn--ghost" data-reveal>Revelar</button></div>';
+        }).join("");
+      }
+      q('[data-field="gm-clues"]').addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-reveal]"); if (!btn) return;
+        var row = btn.closest(".gm-clue"); if (row.classList.contains("revealed")) return;
+        row.classList.add("revealed"); btn.textContent = "Revelada"; btn.disabled = true;
+        SH.toast("Pista revelada aos jogadores.");
+      });
+
+      q('[data-field="scene-pick"]').addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-scene]"); if (!btn) return;
+        M.activeSceneId = btn.dataset.scene;
+        renderScenePick(); renderScene();
+        SH.toast("Cena ativa: " + activeScene().name + ".");
+      });
+
+      renderScenePick();
+
+      /* ================= EVENTOS & CONDIÇÕES ================= */
+      function renderEvents() {
+        q('[data-field="events"]').innerHTML = M.eventsCatalog.map(function (ev) {
+          var on = activeConditions.indexOf(ev) !== -1;
+          return '<button type="button" class="event-btn' + (on ? " on" : "") + '" data-event="' + ev.id + '">' +
+            '<span class="en">' + ev.icon + ' ' + ev.name + '</span>' +
+            '<span class="ee">' + ev.effect + '</span></button>';
+        }).join("");
+      }
+      function renderConditions() {
+        var box = q('[data-field="conditions"]'), empty = q('[data-field="conditions-empty"]');
+        empty.style.display = activeConditions.length ? "none" : "block";
+        box.innerHTML = activeConditions.map(function (ev) {
+          return '<span class="cond">' + ev.icon + ' ' + ev.name +
+            '<button type="button" data-remove="' + ev.id + '" aria-label="Remover condição">×</button></span>';
+        }).join("");
+      }
+      function toggleEvent(id) {
+        var ev = M.eventsCatalog.filter(function (e) { return e.id === id; })[0];
+        var idx = activeConditions.indexOf(ev);
+        if (idx === -1) { activeConditions.push(ev); SH.toast("Evento em cena: " + ev.name + "."); }
+        else { activeConditions.splice(idx, 1); SH.toast("Condição removida: " + ev.name + "."); }
+        renderEvents(); renderConditions(); renderScene();
+      }
+      q('[data-field="events"]').addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-event]"); if (btn) toggleEvent(btn.dataset.event);
+      });
+      q('[data-field="conditions"]').addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-remove]"); if (btn) toggleEvent(btn.dataset.remove);
+      });
+      renderEvents(); renderConditions();
+
+      /* ================= INTENÇÕES PENDENTES ================= */
+      var queue = q('[data-field="queue"]'), countEl = q('[data-field="count"]'), emptyEl = q('[data-field="queue-empty"]');
       function refreshCount() {
         var pending = queue.querySelectorAll('.intent-card:not(.resolved)').length;
         countEl.textContent = pending;
         emptyEl.style.display = pending === 0 ? "block" : "none";
       }
-
       queue.innerHTML = M.intents.map(function (it) {
         return '<article class="intent-card" data-id="' + it.id + '">' +
-          '<div style="min-width:0">' +
-            '<p class="who2">' + it.who + '</p>' +
-            '<h4>' + it.action + '</h4>' +
-            '<div class="intent-tags">' +
-              '<span class="chip">Alvo: ' + it.target + '</span>' +
-              '<span class="chip">' + it.skill + '</span>' +
-              '<span class="chip">' + (riskLabel[it.risk] || it.risk) + '</span>' +
-            '</div>' +
-          '</div>' +
+          '<div style="min-width:0"><p class="who2">' + it.who + '</p><h4>' + it.action + '</h4>' +
+            '<div class="intent-tags"><span class="chip">Alvo: ' + it.target + '</span>' +
+              '<span class="chip">' + it.skill + '</span><span class="chip">' + (riskLabel[it.risk] || it.risk) + '</span></div></div>' +
           '<div class="io-actions">' +
             '<button class="btn btn--sm btn--primary" data-io="aprovar">Aprovar</button>' +
             '<button class="btn btn--sm btn--ghost" data-io="ajustar">Ajustar</button>' +
-            '<button class="btn btn--sm btn--muted" data-io="recusar">Recusar</button>' +
-          '</div>' +
-          '<span class="intent-verdict" hidden></span>' +
-        '</article>';
+            '<button class="btn btn--sm btn--muted" data-io="recusar">Recusar</button></div>' +
+          '<span class="intent-verdict" hidden></span></article>';
       }).join("");
-
       queue.addEventListener("click", function (e) {
-        var btn = e.target.closest("[data-io]");
-        if (!btn) return;
-        var card = btn.closest(".intent-card");
-        var io = btn.dataset.io;
+        var btn = e.target.closest("[data-io]"); if (!btn) return;
+        var card = btn.closest(".intent-card"), io = btn.dataset.io;
         if (io === "ajustar") { SH.toast("Peça um ajuste ao jogador."); return; }
         card.classList.add("resolved");
         var v = card.querySelector(".intent-verdict");
         if (io === "aprovar") { v.textContent = "✓ Aprovada"; v.style.color = "var(--ok)"; SH.toast("Intenção aprovada — role o teste."); }
         else { v.textContent = "✕ Recusada"; v.style.color = "var(--crit)"; SH.toast("Intenção recusada."); }
-        v.hidden = false;
-        refreshCount();
+        v.hidden = false; refreshCount();
       });
       refreshCount();
 
-      /* ---- Pistas da cena (DT sempre visível ao mestre) ---- */
-      document.querySelector('[data-field="gm-clues"]').innerHTML = c.clues.map(function (clue, i) {
-        return '<div class="gm-clue" data-i="' + i + '">' +
-          '<div class="gm-left"><span class="dt">DT ' + clue.dt + '</span>' +
-            '<span class="txt"><span class="sk">' + clue.skill + '</span>' + clue.text + '</span></div>' +
-          '<button class="btn btn--sm btn--ghost" data-reveal="' + i + '">Revelar</button>' +
-        '</div>';
-      }).join("");
-      document.querySelector('[data-field="gm-clues"]').addEventListener("click", function (e) {
-        var btn = e.target.closest("[data-reveal]");
-        if (!btn) return;
-        var row = btn.closest(".gm-clue");
-        if (row.classList.contains("revealed")) return;
-        row.classList.add("revealed");
-        btn.textContent = "Revelada"; btn.disabled = true;
-        SH.toast("Pista revelada aos jogadores.");
-      });
-
-      /* ---- Relógios de ameaça (avançáveis) ---- */
-      var clocksEl = document.querySelector('[data-field="clocks"]');
+      /* ================= RELÓGIOS DE AMEAÇA ================= */
+      var clocksEl = q('[data-field="clocks"]');
       clocksEl.innerHTML = M.clocks.map(function (ck, ci) {
         var segs = "";
         for (var i = 0; i < ck.max; i++) segs += '<span class="seg' + (i < ck.cur ? " on" : "") + '"></span>';
-        return '<div class="clockrow" data-ci="' + ci + '">' +
-          '<span class="cname">' + ck.name + '</span>' +
-          '<span class="cbits"><span class="clock" data-clock>' + segs + '</span>' +
-          '<button class="btn btn--sm btn--muted" data-advance="' + ci + '">Avançar</button></span>' +
-        '</div>';
+        return '<div class="clockrow" data-ci="' + ci + '"><span class="cname">' + ck.name + '</span>' +
+          '<span class="cbits"><span class="clock">' + segs + '</span>' +
+          '<button class="btn btn--sm btn--muted" data-advance="' + ci + '">Avançar</button></span></div>';
       }).join("");
       clocksEl.addEventListener("click", function (e) {
-        var btn = e.target.closest("[data-advance]");
-        if (!btn) return;
+        var btn = e.target.closest("[data-advance]"); if (!btn) return;
         var ck = M.clocks[+btn.dataset.advance];
         if (ck.cur >= ck.max) { SH.toast("Relógio já está completo."); return; }
         ck.cur++;
-        var row = btn.closest(".clockrow");
-        var segEls = row.querySelectorAll(".seg");
-        segEls[ck.cur - 1].classList.add("on");
+        btn.closest(".clockrow").querySelectorAll(".seg")[ck.cur - 1].classList.add("on");
         SH.toast(ck.cur >= ck.max ? "Relógio completo: a ameaça se concretiza!" : "Relógio avançado para " + ck.cur + "/" + ck.max + ".");
       });
 
-      /* ---- O grupo ---- */
-      document.querySelector('[data-field="party"]').innerHTML = M.party.map(function (p) {
-        return '<div class="party-row">' +
-          '<div class="av">' + p.photo + '</div>' +
-          '<div class="pm"><p class="nm">' + p.name + '</p>' +
-            '<div class="mini">' +
-              '<div><small>Estab.</small><div class="bar"><i style="width:' + p.estab + '%;background:var(--ok)"></i></div></div>' +
-              '<div><small>Disc.</small><div class="bar"><i style="width:' + p.disc + '%;background:var(--accent-2)"></i></div></div>' +
-              '<div><small>Corr.</small><div class="bar"><i style="width:' + p.corr + '%;background:var(--blood)"></i></div></div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
+      /* ================= O GRUPO ================= */
+      q('[data-field="party"]').innerHTML = M.party.map(function (p) {
+        return '<div class="party-row"><div class="av">' + p.photo + '</div>' +
+          '<div class="pm"><p class="nm">' + p.name + '</p><div class="mini">' +
+            '<div><small>Estab.</small><div class="bar"><i style="width:' + p.estab + '%;background:var(--ok)"></i></div></div>' +
+            '<div><small>Disc.</small><div class="bar"><i style="width:' + p.disc + '%;background:var(--accent-2)"></i></div></div>' +
+            '<div><small>Corr.</small><div class="bar"><i style="width:' + p.corr + '%;background:var(--blood)"></i></div></div>' +
+          '</div></div></div>';
       }).join("");
 
-      /* ---- Controles de sessão ---- */
-      document.querySelectorAll("[data-ctrl]").forEach(function (btn) {
-        btn.addEventListener("click", function () { SH.toast(btn.dataset.ctrl); });
-      });
+      /* Primeira renderização da cena */
+      renderScene();
     })();
   </script>
-  <script src="../scripts/navigation.js"></script>
-  <script src="../scripts/interactions.js"></script>
+  <script src="../scripts/navigation.js?v=7"></script>
+  <script src="../scripts/interactions.js?v=7"></script>
 </body>
 </html>

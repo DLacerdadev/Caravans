@@ -269,7 +269,38 @@ SH.currentCampaignId = function () {
 SH.MASTER = {
   campaign: "Os Casos de Baker Street",
   session: 3,
-  sceneCaseId: "relojoeiro",   // a cena ativa reusa as pistas/relógio deste caso
+
+  // Controle de tempo
+  time: { dia: 3, rodada: 1, faseIndex: 0 },
+  fases: ["Livre", "Rodadas", "Combate"],
+
+  // Cenas / mapas alternáveis
+  activeSceneId: "gabinete",
+  scenes: [
+    { id: "gabinete", name: "O Gabinete do Relojoeiro", caseId: "relojoeiro",
+      map: "Interior · sala fechada", mapKind: "interior",
+      visibility: "Normal", weather: "Neblina leve",
+      creatures: [ { name: "Elias Warrick (?)", hidden: true } ] },
+    { id: "ruela", name: "Ruela dos Fundos", caseId: null,
+      map: "Externo · beco estreito", mapKind: "externo",
+      visibility: "Penumbra", weather: "Chuva fina",
+      creatures: [ { name: "Vulto encapuzado", hidden: true }, { name: "Cão de guarda", hidden: false } ] },
+    { id: "cripta", name: "Cripta sob a Capela", caseId: "congregacao",
+      map: "Subterrâneo · grid tático", mapKind: "tatico",
+      visibility: "Escuridão", weather: "—",
+      creatures: [ { name: "Acólitos (3)", hidden: false }, { name: "Algo na água", hidden: true } ] }
+  ],
+
+  // Catálogo de eventos que o mestre pode disparar (aplicam condições/modificadores)
+  eventsCatalog: [
+    { id: "neblina",    name: "Neblina densa",    icon: "🌫️", effect: "−2 em Percepção · visibilidade reduzida", visibility: "Penumbra" },
+    { id: "tempestade", name: "Tempestade",        icon: "⛈️", effect: "+2 em Furtividade · ruído encobre passos" },
+    { id: "luacheia",   name: "Lua cheia",         icon: "🌕", effect: "+1 em rituais · sobrenatural mais ativo" },
+    { id: "blackout",   name: "Escuridão total",   icon: "🕯️", effect: "Sem luz: testes de visão falham", visibility: "Escuridão" },
+    { id: "frio",       name: "Frio cortante",     icon: "❄️", effect: "−1 em ações físicas prolongadas" },
+    { id: "presságio",  name: "Presságio",         icon: "🩸", effect: "−1 em Estabilidade ao investigar" }
+  ],
+
   party: [
     { name: "Dra. Adelaide Finch", photo: "🩺", estab: 72, disc: 54, corr: 23 },
     { name: "Thomas Reyes",        photo: "🕵️", estab: 88, disc: 31, corr: 12 },
