@@ -204,3 +204,61 @@ SH.currentCaseId = function () {
   var id = new URLSearchParams(location.search).get("id");
   return (id && SH.CASES[id]) ? id : "relojoeiro";
 };
+
+/* ==========================================================================
+   Campanhas (para a tela de Detalhes da campanha)
+   ========================================================================== */
+SH.CAMPAIGNS = {
+  baker: {
+    id: "baker",
+    name: "Os Casos de Baker Street",
+    era: "Londres · 1891",
+    status: "ativa",
+    statusLabel: "Em andamento",
+    synopsis: "Uma sucessão de desaparecimentos aparentemente sem ligação começa a desenhar um padrão sobre o mapa de Londres. Relojoeiros, docas e uma congregação silenciosa parecem apontar para um mesmo centro — e para algo que se move sob a cidade.",
+    stats: { sessoes: 3, casos: 2, tempo: "3 semanas" },
+    crew: [
+      { name: "Dra. Adelaide Finch", path: "Caminho da Vigília", trait: "Médica-legista. Vê o que os outros preferem não ver.", photo: "🩺" },
+      { name: "Thomas Reyes", path: "Caminho do Ferro", trait: "Ex-detetive da Yard. Punho firme, paciência curta.", photo: "🕵️" },
+      { name: "Cordelia Vance", path: "Caminho do Véu", trait: "Estudiosa do oculto. Lê o que não deveria existir.", photo: "🔮" }
+    ],
+    orgs: [
+      { name: "A Congregação de Ferro", kind: "clandestina", note: "Compra terras ao redor de um único ponto. Objetivo desconhecido." },
+      { name: "Ordem de São Dunstan", kind: "reconhecida", note: "Aliada cautelosa. Financia parte das investigações." }
+    ],
+    log: [
+      { n: 3, title: "Fumaça em Wapping", outcome: "parcial", date: "12 out 1891" },
+      { n: 2, title: "O silêncio da Rua Vachel", outcome: "sucesso", date: "5 out 1891" },
+      { n: 1, title: "A primeira ausência", outcome: "sucesso", date: "28 set 1891" }
+    ]
+  },
+  highgate: {
+    id: "highgate",
+    name: "Arquivos de Highgate",
+    era: "Highgate · 1890",
+    status: "pausada",
+    statusLabel: "Sombria",
+    synopsis: "Um bairro cujas plantas nunca coincidem com a realidade. A cada retorno do grupo, um cômodo a mais — e uma memória a menos. Os arquivos guardam nomes de moradores que ninguém lembra de ter conhecido.",
+    stats: { sessoes: 5, casos: 1, tempo: "2 meses" },
+    crew: [
+      { name: "Padre Ambrose Kell", path: "Caminho da Cinza", trait: "Confessor de segredos que preferiria não ter ouvido.", photo: "⛪" },
+      { name: "Eleanor Shaw", path: "Caminho do Véu", trait: "Arquivista. Encontra o que foi apagado de propósito.", photo: "📚" },
+      { name: "Silas Trent", path: "Caminho do Ferro", trait: "Batedor. Entra primeiro, pergunta depois.", photo: "🗝️" },
+      { name: "Marion Dell", path: "Caminho da Vigília", trait: "Sonâmbula. Anda por lugares que ainda não existem.", photo: "🌙" }
+    ],
+    orgs: [
+      { name: "Cartório de Highgate", kind: "reconhecida", note: "Guarda plantas que contradizem as casas atuais." },
+      { name: "Os Onze", kind: "heretica", note: "Moradores que juram que sempre foram onze cômodos." }
+    ],
+    log: [
+      { n: 5, title: "O corredor mais curto", outcome: "parcial", date: "—" },
+      { n: 4, title: "Aquele que não foi convidado", outcome: "fracasso", date: "—" },
+      { n: 3, title: "A planta de 1864", outcome: "sucesso", date: "—" }
+    ]
+  }
+};
+
+SH.currentCampaignId = function () {
+  var id = new URLSearchParams(location.search).get("id");
+  return (id && SH.CAMPAIGNS[id]) ? id : "baker";
+};
