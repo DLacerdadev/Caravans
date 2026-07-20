@@ -1,0 +1,180 @@
+// Schema Prisma — espelha specs/001-cena-ao-vivo/data-model.md.
+// Enums coincidem com os valores de @caravans/shared (domain/enums.ts).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MASTER
+  PLAYER
+}
+
+enum Skill {
+  INVESTIGACAO
+  OCULTISMO
+  PERCEPCAO
+  FORCA
+  FURTIVIDADE
+  MEDICINA
+}
+
+enum IntentStatus {
+  PENDING
+  APPROVED
+  ADJUSTED
+  REJECTED
+}
+
+enum SceneStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum DiscoveryScope {
+  PLAYER
+  GROUP
+}
+
+model User {
+  id           String           @id @default(cuid())
+  email        String           @unique
+  passwordHash String
+  displayName  String
+  createdAt    DateTime         @default(now())
+  memberships  CampaignMember[]
+  intents      Intent[]
+  discoveries  ClueDiscovery[]
+}
+
+model Campaign {
+  id        String           @id @default(cuid())
+  name      String
+  synopsis  String?
+  joinCode  String           @unique
+  createdAt DateTime         @default(now())
+  members   CampaignMember[]
+  sessions  Session[]
+  scenes    Scene[]
+}
+
+model CampaignMember {
+  id         String   @id @default(cuid())
+  campaignId String
+  userId     String
+  role       Role
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, userId])
+}
+
+model Session {
+  id            String        @id @default(cuid())
+  campaignId    String
+  name          String
+  activeSceneId String?
+  seq           Int           @default(0)
+  createdAt     DateTime      @default(now())
+  campaign      Campaign      @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  activeScene   Scene?        @relation("ActiveScene", fields: [activeSceneId], references: [id])
+  intents       Intent[]
+  clocks        ThreatClock[]
+  discoveries   ClueDiscovery[]
+}
+
+model Scene {
+  id          String        @id @default(cuid())
+  campaignId  String
+  title       String
+  status      SceneStatus   @default(DRAFT)
+  imagePath   String?
+  imageWidth  Int?
+  imageHeight Int?
+  createdAt   DateTime      @default(now())
+  campaign    Campaign      @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  objects     SceneObject[]
+  intents     Intent[]
+  activeInSessions Session[] @relation("ActiveScene")
+}
+
+model SceneObject {
+  id                String   @id @default(cuid())
+  sceneId           String
+  name              String
+  description       String?
+  x                 Float
+  y                 Float
+  state             Json?
+  createdAt         DateTime @default(now())
+  scene             Scene    @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  clues             Clue[]
+  targetedByIntents Intent[]
+}
+
+model Clue {
+  id            String          @id @default(cuid())
+  sceneObjectId String
+  skill         Skill
+  dt            Int
+  text          String
+  order         Int             @default(0)
+  sceneObject   SceneObject     @relation(fields: [sceneObjectId], references: [id], onDelete: Cascade)
+  discoveries   ClueDiscovery[]
+}
+
+model Intent {
+  id             String       @id @default(cuid())
+  sessionId      String
+  sceneId        String
+  authorId       String
+  targetObjectId String?
+  action         String
+  skill          Skill
+  status         IntentStatus @default(PENDING)
+  clientIntentId String
+  rollResult     Int?
+  rollBreakdown  Json?
+  note           String?
+  createdAt      DateTime     @default(now())
+  resolvedAt     DateTime?
+  session        Session      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  scene          Scene        @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  author         User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  targetObject   SceneObject? @relation(fields: [targetObjectId], references: [id])
+  discoveries    ClueDiscovery[]
+
+  @@unique([sessionId, clientIntentId])
+}
+
+model ClueDiscovery {
+  id           String         @id @default(cuid())
+  clueId       String
+  sessionId    String
+  scope        DiscoveryScope
+  userId       String?
+  intentId     String?
+  discoveredAt DateTime       @default(now())
+  clue         Clue           @relation(fields: [clueId], references: [id], onDelete: Cascade)
+  session      Session        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user         User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  intent       Intent?        @relation(fields: [intentId], references: [id], onDelete: SetNull)
+
+  @@unique([clueId, sessionId, scope, userId])
+}
+
+model ThreatClock {
+  id        String   @id @default(cuid())
+  sessionId String
+  name      String
+  current   Int      @default(0)
+  max       Int      @default(4)
+  createdAt DateTime @default(now())
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}

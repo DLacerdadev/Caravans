@@ -24,20 +24,20 @@ Convenção de pacotes: `apps/web`, `apps/api`, `packages/shared` (import como `
 
 ## Phase 2: Foundational (pré-requisitos bloqueantes — antes de todas as histórias)
 
-- [ ] T008 Definir enums de domínio em `packages/shared/src/domain/enums.ts` (Role, Skill, IntentStatus, SceneStatus)
-- [ ] T009 Escrever o schema Prisma em `apps/api/prisma/schema.prisma` com todas as entidades de [data-model.md](./data-model.md)
-- [ ] T010 Migração inicial + client Prisma e módulo de acesso em `apps/api/src/db/client.ts`
-- [ ] T011 [P] Contratos Zod das entidades e DTOs REST em `packages/shared/src/contracts/http.ts`
-- [ ] T012 [P] Contratos Zod dos eventos de tempo real em `packages/shared/src/contracts/realtime.ts`
-- [ ] T013 [P] Motor de regras puro (RNG injetável) em `packages/shared/src/rules/` (`rollTest`, `resolveReveal`, `advanceClock`)
-- [ ] T014 [P] Testes unitários do motor de regras (seed determinística) em `packages/shared/tests/rules.test.ts` **(test-first)**
-- [ ] T015 Projeções por papel `toPlayerScene`/`toMasterScene` em `apps/api/src/realtime/projection.ts`
-- [ ] T016 [P] Teste de **não-vazamento**: payload do jogador sem `dt`/pista oculta/relógio em `apps/api/tests/unit/projection.no-leak.test.ts` **(test-first, SC-003)**
-- [ ] T017 Bootstrap do Fastify (cors, cookie, tratamento de erro, healthcheck) em `apps/api/src/server.ts` e `apps/api/src/plugins/`
-- [ ] T018 Infra de autenticação (argon2 + JWT em cookie httpOnly, guard por papel) em `apps/api/src/plugins/auth.ts`
-- [ ] T019 Bootstrap do gateway Socket.IO (auth no handshake, salas `session:{id}` + `:master`/`:players`, contador `seq`) em `apps/api/src/realtime/gateway.ts`
-- [ ] T020 Bootstrap do app web (router, QueryClientProvider, AuthProvider, SocketProvider, cliente HTTP) em `apps/web/src/app/`
-- [ ] T021 Script de seed em `apps/api/prisma/seed.ts` (mestre + jogador fictícios, campanha/sessão/cena, POI "Marca de sangue", pistas Investigação/Ocultismo, relógio de ameaça)
+- [x] T008 Definir enums de domínio em `packages/shared/src/domain/enums.ts` (Role, Skill, IntentStatus, SceneStatus)
+- [x] T009 Escrever o schema Prisma em `apps/api/prisma/schema.prisma` com todas as entidades de [data-model.md](./data-model.md)
+- [x] T010 Migração inicial + client Prisma e módulo de acesso em `apps/api/src/db/client.ts`
+- [x] T011 [P] Contratos Zod das entidades e DTOs REST em `packages/shared/src/contracts/http.ts`
+- [x] T012 [P] Contratos Zod dos eventos de tempo real em `packages/shared/src/contracts/realtime.ts`
+- [x] T013 [P] Motor de regras puro (RNG injetável) em `packages/shared/src/rules/` (`rollTest`, `resolveReveal`, `advanceClock`)
+- [x] T014 [P] Testes unitários do motor de regras (seed determinística) em `packages/shared/tests/rules.test.ts` **(test-first)**
+- [x] T015 Projeções por papel `toPlayerScene`/`toMasterScene` em `apps/api/src/realtime/projection.ts`
+- [x] T016 [P] Teste de **não-vazamento**: payload do jogador sem `dt`/pista oculta/relógio em `apps/api/tests/unit/projection.no-leak.test.ts` **(test-first, SC-003)**
+- [x] T017 Bootstrap do Fastify (cors, cookie, tratamento de erro, healthcheck) em `apps/api/src/server.ts` e `apps/api/src/plugins/`
+- [x] T018 Infra de autenticação (argon2 + JWT em cookie httpOnly, guard por papel) em `apps/api/src/plugins/auth.ts`
+- [x] T019 Bootstrap do gateway Socket.IO (auth no handshake, salas `session:{id}` + `:master`/`:players`, contador `seq`) em `apps/api/src/realtime/gateway.ts`
+- [x] T020 Bootstrap do app web (router, QueryClientProvider, AuthProvider, SocketProvider, cliente HTTP) em `apps/web/src/app/`
+- [x] T021 Script de seed em `apps/api/prisma/seed.ts` (mestre + jogador fictícios, campanha/sessão/cena, POI "Marca de sangue", pistas Investigação/Ocultismo, relógio de ameaça)
 
 **Checkpoint**: base pronta — banco, contratos, regras testadas, auth, gateway e seed funcionando.
 
@@ -52,14 +52,14 @@ revelada, tudo em tempo real e sem vazar dado oculto.
 na hora no painel do mestre; ao aprovar, a pista com DT ≤ resultado é revelada ao jogador; a DT
 nunca chega ao cliente do jogador.
 
-- [ ] T022 [US1] Serviços/repos de cena, objetos, pistas e intenções em `apps/api/src/modules/scenes/` e `apps/api/src/modules/intents/`
-- [ ] T023 [US1] `GET /api/sessions/:id/state` — snapshot projetado por papel em `apps/api/src/modules/sessions/state.ts`
-- [ ] T024 [US1] Handler `intent:submit` (idempotente por `clientIntentId`) → PENDING → `intent:created` só à sala do mestre, em `apps/api/src/realtime/handlers/intents.ts`
-- [ ] T025 [US1] Handler `intent:resolve` APPROVE → `rollTest` (d20+perícia) → cria `ClueDiscovery` p/ pistas com DT ≤ resultado → APPROVED com `rollResult` → emite `clue:revealed` (projetado) + `intent:updated`
-- [ ] T026 [US1] Handler `intent:resolve` REJECT e ADJUST (ADJUST devolve ao autor com `note`) em `apps/api/src/realtime/handlers/intents.ts`
-- [ ] T027 [P] [US1] Web: página **Cena (Vígil)** ligada ao snapshot + socket (POIs, enviar intenção, histórico de pistas) em `apps/web/src/pages/cena.tsx`
-- [ ] T028 [P] [US1] Web: **Painel do mestre** — fila de intenções ao vivo com Aprovar/Ajustar/Recusar em `apps/web/src/pages/mestre.tsx`
-- [ ] T029 [US1] Teste de integração do laço (submit→approve→reveal) + não-vazamento em tempo real em `apps/api/tests/integration/loop.test.ts`
+- [x] T022 [US1] Serviços/repos de cena, objetos, pistas e intenções em `apps/api/src/modules/scenes/` e `apps/api/src/modules/intents/`
+- [x] T023 [US1] `GET /api/sessions/:id/state` — snapshot projetado por papel em `apps/api/src/modules/sessions/state.ts`
+- [x] T024 [US1] Handler `intent:submit` (idempotente por `clientIntentId`) → PENDING → `intent:created` só à sala do mestre, em `apps/api/src/realtime/handlers/intents.ts`
+- [x] T025 [US1] Handler `intent:resolve` APPROVE → `rollTest` (d20+perícia) → cria `ClueDiscovery` p/ pistas com DT ≤ resultado → APPROVED com `rollResult` → emite `clue:revealed` (projetado) + `intent:updated`
+- [x] T026 [US1] Handler `intent:resolve` REJECT e ADJUST (ADJUST devolve ao autor com `note`) em `apps/api/src/realtime/handlers/intents.ts`
+- [x] T027 [P] [US1] Web: página **Cena (Vígil)** ligada ao snapshot + socket (POIs, enviar intenção, histórico de pistas) em `apps/web/src/pages/cena.tsx`
+- [x] T028 [P] [US1] Web: **Painel do mestre** — fila de intenções ao vivo com Aprovar/Ajustar/Recusar em `apps/web/src/pages/mestre.tsx`
+- [x] T029 [US1] Teste de integração do laço (submit→approve→reveal) + não-vazamento em tempo real em `apps/api/tests/integration/loop.test.ts`
 
 **Checkpoint**: o núcleo do jogo é jogável de ponta a ponta.
 
