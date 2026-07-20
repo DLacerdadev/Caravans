@@ -31,6 +31,6 @@
 
 ## Notes
 
-- A mecânica de resolução do teste (DT) foi assumida como conduzida pelo mestre; rolagem
-  automática de dados é candidata a confirmação em `/speckit-clarify` (não bloqueia o planejamento).
-- Fonte da imagem da cena assumida como URL de um conjunto de exemplo; upload avançado é evolução futura.
+- Ambiguidades resolvidas em `/speckit-clarify` (Session 2026-07-16): resolução de teste por
+  rolagem automática (d20 + perícia); perícias de conjunto fixo; imagem por upload; "Ajustar"
+  devolve a intenção ao jogador. Spec pronta para `/speckit-plan`.

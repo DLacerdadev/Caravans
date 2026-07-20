@@ -5,6 +5,17 @@
 **Status**: Draft  
 **Input**: User description: "MVP Etapa 1 — Cena investigativa jogável ao vivo, com mestre e jogadores sincronizados."
 
+## Clarifications
+
+### Session 2026-07-16
+
+- Q: Como o teste de perícia (DT) é resolvido ao aprovar uma intenção? → A: Rolagem automática pelo
+  sistema (d20 + perícia); revela pistas do alvo com DT ≤ resultado.
+- Q: Como tratar as perícias no MVP? → A: Conjunto fixo inicial (Investigação, Ocultismo,
+  Percepção, Força, Furtividade, Medicina).
+- Q: De onde vem a imagem de fundo da cena? → A: Upload real de imagem pelo mestre.
+- Q: O que a ação "Ajustar" do mestre faz? → A: Devolve a intenção ao jogador para refazer e reenviar.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Descobrir pistas ao vivo, mediado pelo mestre (Priority: P1)
@@ -135,20 +146,25 @@ verifica-se que ele volta à mesma cena com exatamente as pistas descobertas at�
 - **FR-004**: O mestre MUST poder criar e gerenciar a estrutura **Campanha → Sessão → Cena**.
 - **FR-005**: Uma sessão MUST ter, a cada momento, no máximo uma **cena ativa**.
 - **FR-006**: Uma cena MUST poder conter uma imagem de ambiente e **pontos de interesse**
-  clicáveis, cada um associado a um **objeto de cena**.
+  clicáveis, cada um associado a um **objeto de cena**. A imagem MUST poder ser enviada por
+  **upload** do mestre (com validação de tipo e tamanho).
 
 **Pistas e dificuldade**
 - **FR-007**: Uma pista MUST ser vinculada a uma **perícia** e a uma **dificuldade (DT)**.
 - **FR-008**: A DT e o conteúdo de pistas não descobertas MUST permanecer ocultos ao jogador.
 - **FR-009**: O sistema MUST registrar pistas descobertas por **jogador** e por **grupo**.
+- **FR-022**: O sistema MUST oferecer um **conjunto fixo de perícias** (Investigação, Ocultismo,
+  Percepção, Força, Furtividade, Medicina), usado por pistas e intenções.
 
 **Intenção e mediação**
 - **FR-010**: O jogador MUST poder declarar uma **intenção** contendo ao menos autor, alvo/ponto
   de interesse, ação e perícia.
 - **FR-011**: O mestre MUST ver uma **fila** das intenções pendentes e MUST poder **Aprovar**,
-  **Ajustar** ou **Recusar** cada uma.
-- **FR-012**: Ao aprovar, o sistema MUST permitir resolver o resultado e, quando o resultado
-  alcança a DT de uma pista aplicável, **revelar** a pista.
+  **Ajustar** ou **Recusar** cada uma. **Ajustar** MUST devolver a intenção ao jogador (com um
+  pedido de ajuste) para que ele a refaça e reenvie.
+- **FR-012**: Ao aprovar, o sistema MUST **rolar o teste automaticamente** (d20 + perícia) e
+  **revelar** todas as pistas aplicáveis do alvo cujo **DT ≤ resultado**; o resultado da rolagem
+  é registrado. Se nenhuma pista atinge o limiar, nenhuma é revelada.
 - **FR-013**: O jogador MUST ser notificado do desfecho de sua intenção (aprovada/ajustada/
   recusada) e do que foi revelado, se algo.
 
@@ -211,11 +227,12 @@ verifica-se que ele volta à mesma cena com exatamente as pistas descobertas at�
 - **Autenticação**: método padrão de e-mail + senha para MVP; cadastro simples. (Sem SSO/OAuth
   nesta etapa.)
 - **Ingresso na campanha**: por um **código/convite** compartilhado pelo mestre.
-- **Imagem da cena**: fornecida pelo mestre (por URL) a partir de um conjunto de exemplo incluído
-  no MVP; upload avançado de imagens fica para evolução futura.
-- **Resolução do teste (DT)**: conduzida pelo **mestre** (ao aprovar, ele confirma/informa o
-  resultado que revela ou não a pista). A rolagem automática de dados é evolução futura — a ser
-  confirmada em `/speckit-clarify`.
+- **Imagem da cena**: enviada por **upload** do mestre, com validação de tipo e tamanho.
+- **Resolução do teste (DT)**: **rolagem automática** pelo sistema (d20 + perícia) ao aprovar a
+  intenção; revela as pistas do alvo com DT ≤ resultado. O mestre mantém Aprovar/Ajustar/Recusar
+  como controle.
+- **Perícias**: conjunto **fixo** inicial (Investigação, Ocultismo, Percepção, Força, Furtividade,
+  Medicina).
 - **Escala**: até ~6 jogadores por sessão no MVP; navegadores modernos de desktop e celular.
 - **Fora de escopo (reafirmado)**: mapas táticos com grid/tokens arrastáveis, progressão por
   Caminhos, organizações/simulação de mundo, geração de missões, ambiente 3D e ascensão.
