@@ -8,6 +8,39 @@ export interface UserDto {
   displayName: string;
 }
 
+export interface SessionSummary {
+  id: string;
+  name: string;
+}
+
+export interface CampaignSummary {
+  id: string;
+  name: string;
+  synopsis: string | null;
+  role: Role;
+  joinCode: string | null; // só preenchido para o mestre
+  sessionCount: number;
+}
+
+export interface CampaignMemberDto {
+  userId: string;
+  displayName: string;
+  role: Role;
+}
+
+export interface SceneSummary {
+  id: string;
+  title: string;
+  status: string;
+  isActive: boolean;
+}
+
+export interface CampaignDetail extends CampaignSummary {
+  members: CampaignMemberDto[];
+  sessions: SessionSummary[];
+  scenes: SceneSummary[]; // vazio para jogadores
+}
+
 /** Pista como o JOGADOR vê (somente descobertas; sem DT). */
 export interface ClueView {
   id: string;
@@ -87,6 +120,7 @@ export interface MasterSnapshot {
   scene: SceneMasterView | null;
   intents: IntentView[];
   clocks: ClockView[];
+  scenes: SceneSummary[]; // cenas disponíveis da campanha (para troca de cena)
 }
 
 export type SceneSnapshot = PlayerSnapshot | MasterSnapshot;

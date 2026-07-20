@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { io, type Socket } from 'socket.io-client';
 import {
   CLIENT_EVENTS,
@@ -13,74 +13,90 @@ import {
   type MasterSnapshot,
   type IntentView,
   type ClueView,
+  type ClockView,
+  type SceneSummary,
   type IntentCreatedEvent,
   type IntentUpdatedEvent,
   type ClueRevealedEvent,
+  type ClockUpdatedEvent,
   type SceneSnapshotEvent,
 } from '@caravans/shared';
 import { api } from '../lib/http';
 
-type Me = { user: { id: string; displayName: string } };
-type MySessions = { sessions: { sessionId: string; role: 'MASTER' | 'PLAYER'; campaignName: string }[] };
-
 export function GamePage() {
   const nav = useNavigate();
+  const { sessionId } = useParams<{ sessionId: string }>();
   const [snapshot, setSnapshot] = useState<SceneSnapshot | null>(null);
   const [error, setError] = useState<string | null>(null);
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
+    if (!sessionId) return;
     let active = true;
-    (async () => {
-      try {
-        await api<Me>('/api/auth/me');
-      } catch {
-        nav('/login');
-        return;
+    let lastSeq = -1;
+    const fresh = (seq: number) => {
+      if (seq <= lastSeq) return false;
+      lastSeq = seq;
+      return true;
+    };
+
+    const socket = io({ withCredentials: true });
+    socketRef.current = socket;
+    const join = () => socket.emit(CLIENT_EVENTS.SESSION_JOIN, { sessionId });
+    socket.on('connect', join); // (re)entra na sessão ao conectar/reconectar
+
+    socket.on(SERVER_EVENTS.SCENE_SNAPSHOT, (e: SceneSnapshotEvent) => {
+      if (!active) return;
+      lastSeq = e.seq;
+      if (e.snapshot) {
+        document.documentElement.dataset.mode = e.snapshot.role === 'MASTER' ? 'master' : 'mission';
       }
-      const { sessions } = await api<MySessions>('/api/my/sessions');
-      const first = sessions[0];
-      if (!first) {
-        setError('Você ainda não participa de nenhuma sessão.');
-        return;
-      }
-      document.documentElement.dataset.mode = first.role === 'MASTER' ? 'master' : 'mission';
-
-      const socket = io({ withCredentials: true });
-      socketRef.current = socket;
-
-      socket.on(SERVER_EVENTS.SCENE_SNAPSHOT, (e: SceneSnapshotEvent) => {
-        if (active) setSnapshot(e.snapshot);
+      setSnapshot(e.snapshot);
+    });
+    socket.on(SERVER_EVENTS.INTENT_CREATED, (e: IntentCreatedEvent) => {
+      if (!fresh(e.seq)) return;
+      setSnapshot((s) => (s && s.role === 'MASTER' ? { ...s, intents: upsertIntent(s.intents, e.intent) } : s));
+    });
+    socket.on(SERVER_EVENTS.INTENT_UPDATED, (e: IntentUpdatedEvent) => {
+      if (!fresh(e.seq)) return;
+      setSnapshot((s) => {
+        if (!s) return s;
+        if (s.role === 'MASTER') return { ...s, intents: upsertIntent(s.intents, e.intent) };
+        return { ...s, myIntents: upsertIntent(s.myIntents, e.intent) };
       });
-      socket.on(SERVER_EVENTS.INTENT_CREATED, (e: IntentCreatedEvent) => {
-        setSnapshot((s) =>
-          s && s.role === 'MASTER' ? { ...s, intents: upsertIntent(s.intents, e.intent) } : s,
-        );
+    });
+    socket.on(SERVER_EVENTS.CLUE_REVEALED, (e: ClueRevealedEvent) => {
+      if (!fresh(e.seq)) return;
+      setSnapshot((s) => {
+        if (!s) return s;
+        if (s.role === 'PLAYER') return { ...s, groupClues: upsertClue(s.groupClues, e.clue) };
+        return {
+          ...s,
+          scene: s.scene
+            ? {
+                ...s.scene,
+                objects: s.scene.objects.map((o) => ({
+                  ...o,
+                  clues: o.clues.map((c) => (c.id === e.clue.id ? { ...c, discovered: true } : c)),
+                })),
+              }
+            : s.scene,
+        };
       });
-      socket.on(SERVER_EVENTS.INTENT_UPDATED, (e: IntentUpdatedEvent) => {
-        setSnapshot((s) => {
-          if (!s) return s;
-          if (s.role === 'MASTER') return { ...s, intents: upsertIntent(s.intents, e.intent) };
-          return { ...s, myIntents: upsertIntent(s.myIntents, e.intent) };
-        });
-      });
-      socket.on(SERVER_EVENTS.CLUE_REVEALED, (e: ClueRevealedEvent) => {
-        setSnapshot((s) => {
-          if (!s || s.role !== 'PLAYER') return s;
-          return { ...s, groupClues: upsertClue(s.groupClues, e.clue) };
-        });
-      });
-      socket.on(SERVER_EVENTS.ERROR, (e: { message: string }) => setError(e.message));
-
-      socket.emit(CLIENT_EVENTS.SESSION_JOIN, { sessionId: first.sessionId });
-    })();
+    });
+    socket.on(SERVER_EVENTS.CLOCK_UPDATED, (e: ClockUpdatedEvent) => {
+      if (!fresh(e.seq)) return;
+      setSnapshot((s) => (s && s.role === 'MASTER' ? { ...s, clocks: upsertClock(s.clocks, e.clock) } : s));
+    });
+    socket.on(SERVER_EVENTS.SCENE_CHANGED, () => join()); // troca de cena → novo snapshot
+    socket.on(SERVER_EVENTS.ERROR, (e: { message: string }) => setError(e.message));
 
     return () => {
       active = false;
-      socketRef.current?.disconnect();
+      socket.disconnect();
       document.documentElement.dataset.mode = 'safe';
     };
-  }, [nav]);
+  }, [sessionId]);
 
   async function logout() {
     await api('/api/auth/logout', { method: 'POST' });
@@ -123,6 +139,13 @@ function upsertIntent(list: IntentView[], intent: IntentView): IntentView[] {
 }
 function upsertClue(list: ClueView[], clue: ClueView): ClueView[] {
   return list.some((c) => c.id === clue.id) ? list : [...list, clue];
+}
+function upsertClock(list: ClockView[], clock: ClockView): ClockView[] {
+  const i = list.findIndex((c) => c.id === clock.id);
+  if (i === -1) return [...list, clock];
+  const copy = list.slice();
+  copy[i] = clock;
+  return copy;
 }
 
 // ----------------------------------------------------------------------------
@@ -247,6 +270,15 @@ function MasterView({
   function resolve(intentId: string, decision: keyof typeof ResolveDecision) {
     socket.emit(CLIENT_EVENTS.INTENT_RESOLVE, { intentId, decision: ResolveDecision[decision] });
   }
+  function reveal(clueId: string) {
+    socket.emit(CLIENT_EVENTS.CLUE_REVEAL, { clueId });
+  }
+  function advance(clockId: string, delta: 1 | -1) {
+    socket.emit(CLIENT_EVENTS.CLOCK_ADVANCE, { clockId, delta });
+  }
+  function switchScene(sceneId: string) {
+    socket.emit(CLIENT_EVENTS.SCENE_SWITCH, { sessionId: snapshot.sessionId, sceneId });
+  }
 
   return (
     <div className="shell">
@@ -262,6 +294,17 @@ function MasterView({
       <main>
         <p className="eyebrow">Cena ativa</p>
         <h1 className="page-title">{snapshot.scene?.title ?? 'Sem cena ativa'}</h1>
+
+        {snapshot.scenes.length > 1 && (
+          <div className="row" style={{ gap: 8, marginBottom: 14 }}>
+            <span className="skill-tab" style={{ margin: 0 }}>Trocar cena:</span>
+            <select value={snapshot.scene?.id ?? ''} onChange={(e) => switchScene(e.target.value)}>
+              {snapshot.scenes.map((sc: SceneSummary) => (
+                <option key={sc.id} value={sc.id}>{sc.title}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="case-layout">
           <section className="stack" style={{ gap: 'var(--sp-5)' }}>
@@ -301,7 +344,11 @@ function MasterView({
                         <span className="dt">DT {c.dt}</span>
                         <span className="txt"><span className="sk">{SKILL_LABELS[c.skill]}</span>{c.text}</span>
                       </div>
-                      {c.discovered && <span className="chip">revelada</span>}
+                      {c.discovered ? (
+                        <span className="chip">revelada</span>
+                      ) : (
+                        <button className="btn btn--sm btn--ghost" onClick={() => reveal(c.id)}>Revelar</button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -321,6 +368,8 @@ function MasterView({
                       <span key={idx} className={'seg' + (idx < ck.current ? ' on' : '')} />
                     ))}
                   </span>
+                  <button className="btn btn--sm btn--muted" onClick={() => advance(ck.id, -1)}>−</button>
+                  <button className="btn btn--sm btn--muted" onClick={() => advance(ck.id, 1)}>Avançar</button>
                 </span>
               </div>
             ))}

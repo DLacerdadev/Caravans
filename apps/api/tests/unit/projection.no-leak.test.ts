@@ -74,7 +74,7 @@ describe('projeção do jogador — não vaza dado oculto (SC-003)', () => {
 });
 
 describe('projeção do mestre — vê tudo', () => {
-  const snap = buildMasterSnapshot({ sessionId: 's1', seq: 7, scene, discoveries, intents: [], clocks });
+  const snap = buildMasterSnapshot({ sessionId: 's1', seq: 7, scene, discoveries, intents: [], clocks, scenes: [] });
   it('inclui DTs e todas as pistas', () => {
     const clues = snap.scene?.objects[0]?.clues ?? [];
     expect(clues).toHaveLength(2);

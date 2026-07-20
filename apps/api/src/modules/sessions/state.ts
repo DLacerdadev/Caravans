@@ -85,7 +85,18 @@ async function loadRaw(sessionId: string) {
     userId: d.userId,
   }));
 
-  return { seq: session.seq, scene, intents, clocks, discoveries };
+  const sceneRows = await prisma.scene.findMany({
+    where: { campaignId: session.campaignId },
+    orderBy: { createdAt: 'asc' },
+  });
+  const scenes = sceneRows.map((s) => ({
+    id: s.id,
+    title: s.title,
+    status: s.status,
+    isActive: s.id === session.activeSceneId,
+  }));
+
+  return { seq: session.seq, scene, intents, clocks, discoveries, scenes };
 }
 
 export async function buildSnapshot(
@@ -96,7 +107,15 @@ export async function buildSnapshot(
   const raw = await loadRaw(sessionId);
   if (!raw) return null;
   if (role === 'MASTER') {
-    return buildMasterSnapshot({ sessionId, seq: raw.seq, scene: raw.scene, discoveries: raw.discoveries, intents: raw.intents, clocks: raw.clocks });
+    return buildMasterSnapshot({
+      sessionId,
+      seq: raw.seq,
+      scene: raw.scene,
+      discoveries: raw.discoveries,
+      intents: raw.intents,
+      clocks: raw.clocks,
+      scenes: raw.scenes,
+    });
   }
   return buildPlayerSnapshot({ sessionId, seq: raw.seq, scene: raw.scene, discoveries: raw.discoveries, intents: raw.intents, userId });
 }

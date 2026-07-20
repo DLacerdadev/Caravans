@@ -9,8 +9,12 @@ import {
   intentSubmitSchema,
   intentResolveSchema,
   sessionJoinSchema,
+  clueRevealSchema,
+  clockAdvanceSchema,
+  sceneSwitchSchema,
   rollTest,
   resolveReveal,
+  advanceClock,
   type IntentView,
   type Rng,
 } from '@caravans/shared';
@@ -75,6 +79,9 @@ export function registerGateway(io: Server): void {
       if (!ctx) return fail('NOT_FOUND', 'Sessão não encontrada');
       const role = await getRoleInCampaign(ctx.campaignId, userId);
       if (!role) return fail('FORBIDDEN', 'Sem acesso a esta sessão');
+      const sd = socket.data as Record<string, unknown>;
+      sd.sessionId = ctx.sessionId;
+      sd.role = role;
       socket.join(roomSession(ctx.sessionId));
       socket.join(role === 'MASTER' ? roomMaster(ctx.sessionId) : roomPlayers(ctx.sessionId));
       const snapshot = await buildSnapshot(ctx.sessionId, userId, role);
@@ -99,18 +106,25 @@ export function registerGateway(io: Server): void {
       const session = await prisma.session.findUnique({ where: { id: d.sessionId } });
       if (!session?.activeSceneId) return fail('NO_SCENE', 'Sem cena ativa');
 
-      const intent = await prisma.intent.create({
-        data: {
-          sessionId: d.sessionId,
-          sceneId: session.activeSceneId,
-          authorId: userId,
-          targetObjectId: d.targetObjectId ?? null,
-          action: d.action,
-          skill: d.skill,
-          clientIntentId: d.clientIntentId,
-        },
-        include: { author: true },
-      });
+      let intent;
+      try {
+        intent = await prisma.intent.create({
+          data: {
+            sessionId: d.sessionId,
+            sceneId: session.activeSceneId,
+            authorId: userId,
+            targetObjectId: d.targetObjectId ?? null,
+            action: d.action,
+            skill: d.skill,
+            clientIntentId: d.clientIntentId,
+          },
+          include: { author: true },
+        });
+      } catch (e) {
+        // corrida de idempotência: outro envio com o mesmo clientIntentId já criou → ignora.
+        if ((e as { code?: string }).code === 'P2002') return;
+        throw e;
+      }
       const seq = await nextSeq(d.sessionId);
       io.to(roomMaster(d.sessionId)).emit(SERVER_EVENTS.INTENT_CREATED, { seq, intent: intentView(intent) });
     });
@@ -200,6 +214,64 @@ export function registerGateway(io: Server): void {
           scope: 'GROUP',
         });
       }
+    });
+
+    // ---- Controles do mestre (US3) ----
+    socket.on(CLIENT_EVENTS.CLUE_REVEAL, async (payload) => {
+      const parsed = clueRevealSchema.safeParse(payload);
+      if (!parsed.success) return fail('BAD_REQUEST', 'clueId inválido');
+      const sd = socket.data as { sessionId?: string; role?: string };
+      if (sd.role !== 'MASTER' || !sd.sessionId) return fail('FORBIDDEN', 'Apenas o mestre revela');
+      const clue = await prisma.clue.findUnique({ where: { id: parsed.data.clueId } });
+      if (!clue) return fail('NOT_FOUND', 'Pista não encontrada');
+      const already = await prisma.clueDiscovery.findFirst({
+        where: { clueId: clue.id, sessionId: sd.sessionId, scope: 'GROUP' },
+      });
+      if (!already) {
+        await prisma.clueDiscovery.create({
+          data: { clueId: clue.id, sessionId: sd.sessionId, scope: 'GROUP' },
+        });
+      }
+      const seq = await nextSeq(sd.sessionId);
+      io.to(roomSession(sd.sessionId)).emit(SERVER_EVENTS.CLUE_REVEALED, {
+        seq,
+        clue: { id: clue.id, sceneObjectId: clue.sceneObjectId, skill: clue.skill, text: clue.text, order: clue.order },
+        scope: 'GROUP',
+      });
+    });
+
+    socket.on(CLIENT_EVENTS.CLOCK_ADVANCE, async (payload) => {
+      const parsed = clockAdvanceSchema.safeParse(payload);
+      if (!parsed.success) return fail('BAD_REQUEST', 'Dados inválidos');
+      const sd = socket.data as { sessionId?: string; role?: string };
+      if (sd.role !== 'MASTER' || !sd.sessionId) return fail('FORBIDDEN', 'Apenas o mestre');
+      const clock = await prisma.threatClock.findUnique({ where: { id: parsed.data.clockId } });
+      if (!clock || clock.sessionId !== sd.sessionId) return fail('NOT_FOUND', 'Relógio não encontrado');
+      const next = advanceClock({ current: clock.current, max: clock.max }, parsed.data.delta);
+      const updated = await prisma.threatClock.update({
+        where: { id: clock.id },
+        data: { current: next.current },
+      });
+      const seq = await nextSeq(sd.sessionId);
+      // relógio é oculto ao jogador → só à sala do mestre
+      io.to(roomMaster(sd.sessionId)).emit(SERVER_EVENTS.CLOCK_UPDATED, {
+        seq,
+        clock: { id: updated.id, name: updated.name, current: updated.current, max: updated.max },
+      });
+    });
+
+    socket.on(CLIENT_EVENTS.SCENE_SWITCH, async (payload) => {
+      const parsed = sceneSwitchSchema.safeParse(payload);
+      if (!parsed.success) return fail('BAD_REQUEST', 'Dados inválidos');
+      const sd = socket.data as { sessionId?: string; role?: string };
+      if (sd.role !== 'MASTER' || !sd.sessionId) return fail('FORBIDDEN', 'Apenas o mestre');
+      const ctx = await getSessionContext(sd.sessionId);
+      if (!ctx) return fail('NOT_FOUND', 'Sessão não encontrada');
+      const scene = await prisma.scene.findUnique({ where: { id: parsed.data.sceneId } });
+      if (!scene || scene.campaignId !== ctx.campaignId) return fail('NOT_FOUND', 'Cena não encontrada');
+      await prisma.session.update({ where: { id: sd.sessionId }, data: { activeSceneId: scene.id } });
+      const seq = await nextSeq(sd.sessionId);
+      io.to(roomSession(sd.sessionId)).emit(SERVER_EVENTS.SCENE_CHANGED, { seq, sceneId: scene.id });
     });
   });
 }

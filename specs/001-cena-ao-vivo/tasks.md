@@ -72,11 +72,11 @@ nunca chega ao cliente do jogador.
 **Independent Test**: um usuário se autentica, ingressa por código como jogador e chega à cena na
 visão correta; não consegue abrir a visão de mestre sem o papel.
 
-- [ ] T030 [US2] API de campanhas: listar/criar/ingressar(`joinCode`)/detalhe em `apps/api/src/modules/campaigns/`
-- [ ] T031 [P] [US2] Web: páginas **login/registro** ligadas à API de auth em `apps/web/src/pages/login.tsx`
-- [ ] T032 [P] [US2] Web: páginas **campanhas** e **campanha** (listar/criar/ingressar) em `apps/web/src/pages/campanhas.tsx` e `apps/web/src/pages/campanha.tsx`
-- [ ] T033 [US2] Rotas com guarda por papel (mestre × jogador) em `apps/web/src/app/routes.tsx`
-- [ ] T034 [P] [US2] Testes de contrato de auth e campanhas em `apps/api/tests/contract/auth.test.ts` e `campaigns.test.ts`
+- [x] T030 [US2] API de campanhas: listar/criar/ingressar(`joinCode`)/detalhe em `apps/api/src/modules/campaigns/`
+- [x] T031 [P] [US2] Web: páginas **login/registro** ligadas à API de auth em `apps/web/src/pages/login.tsx`
+- [x] T032 [P] [US2] Web: páginas **campanhas** e **campanha** (listar/criar/ingressar) em `apps/web/src/pages/campanhas.tsx` e `apps/web/src/pages/campanha.tsx`
+- [x] T033 [US2] Rotas com guarda por papel (mestre × jogador) em `apps/web/src/app/routes.tsx`
+- [x] T034 [P] [US2] Testes de contrato de auth e campanhas em `apps/api/tests/contract/auth.test.ts` e `campaigns.test.ts`
 
 **Checkpoint**: qualquer usuário entra, escolhe campanha e chega à cena no papel certo.
 
@@ -90,10 +90,10 @@ cenas (upload de imagem, objetos, pistas).
 **Independent Test**: o mestre revela uma pista, avança um relógio e troca a cena; o jogador
 recebe pista e nova cena em tempo real, mas nunca o valor do relógio nem DTs.
 
-- [ ] T035 [US3] Handlers `clue:reveal` (manual), `clock:advance`, `scene:switch` em `apps/api/src/realtime/handlers/master.ts`
-- [ ] T036 [US3] API de cenas: criar cena, **upload de imagem** (multipart, validar mime/tamanho), CRUD de objetos/pistas, definir cena ativa em `apps/api/src/modules/scenes/`
-- [ ] T037 [P] [US3] Web: controles do mestre (revelar, relógio de ameaça, troca de cena, autoria de cena) em `apps/web/src/pages/mestre.tsx`
-- [ ] T038 [US3] Teste de integração: controles do mestre emitem corretamente e dado oculto continua só do mestre em `apps/api/tests/integration/master-controls.test.ts`
+- [x] T035 [US3] Handlers `clue:reveal` (manual), `clock:advance`, `scene:switch` em `apps/api/src/realtime/handlers/master.ts`
+- [x] T036 [US3] API de cenas: criar cena, **upload de imagem** (multipart, validar mime/tamanho), CRUD de objetos/pistas, definir cena ativa em `apps/api/src/modules/scenes/`
+- [x] T037 [P] [US3] Web: controles do mestre (revelar, relógio de ameaça, troca de cena, autoria de cena) em `apps/web/src/pages/mestre.tsx`
+- [x] T038 [US3] Teste de integração: controles do mestre emitem corretamente e dado oculto continua só do mestre em `apps/api/tests/integration/master-controls.test.ts`
 
 **Checkpoint**: o mestre conduz a mesa completamente.
 
@@ -106,9 +106,9 @@ recebe pista e nova cena em tempo real, mas nunca o valor do relógio nem DTs.
 **Independent Test**: com pistas já reveladas, o jogador recarrega e volta ao mesmo estado; uma
 intenção anterior não é duplicada.
 
-- [ ] T039 [US4] Reidratação via `scene:snapshot` no join/reconnect + descarte de `seq` ≤ snapshot no `SocketProvider` (`apps/web/src/app/socket.tsx`) e gateway
-- [ ] T040 [US4] Idempotência/dedupe de intenções e descobertas na reconexão em `apps/api/src/realtime/handlers/intents.ts`
-- [ ] T041 [US4] Teste de integração de reconexão (restaura estado, sem duplicar) em `apps/api/tests/integration/reconnect.test.ts`
+- [x] T039 [US4] Reidratação via `scene:snapshot` no join/reconnect + descarte de `seq` ≤ snapshot no `SocketProvider` (`apps/web/src/app/socket.tsx`) e gateway
+- [x] T040 [US4] Idempotência/dedupe de intenções e descobertas na reconexão em `apps/api/src/realtime/handlers/intents.ts`
+- [x] T041 [US4] Teste de integração de reconexão (restaura estado, sem duplicar) em `apps/api/tests/integration/reconnect.test.ts`
 
 **Checkpoint**: confiável para uma mesa real.
 

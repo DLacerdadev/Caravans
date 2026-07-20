@@ -11,6 +11,7 @@ import type {
   SceneObjectMasterView,
   SceneObjectView,
   SceneView,
+  SceneSummary,
 } from '@caravans/shared';
 import { DiscoveryScope } from '@caravans/shared';
 import type { Skill, IntentStatus } from '@caravans/shared';
@@ -170,6 +171,7 @@ export function buildMasterSnapshot(args: {
   discoveries: RawDiscovery[];
   intents: RawIntent[];
   clocks: RawClock[];
+  scenes: SceneSummary[];
 }): MasterSnapshot {
   const discovered = new Set(args.discoveries.map((d) => d.clueId));
   const clocks: ClockView[] = args.clocks.map((c) => ({
@@ -185,5 +187,6 @@ export function buildMasterSnapshot(args: {
     scene: toMasterScene(args.scene, discovered),
     intents: args.intents.map(intentView),
     clocks,
+    scenes: args.scenes,
   };
 }

@@ -1,7 +1,9 @@
+import { resolve } from 'node:path';
 import Fastify, { type FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
 import cookie from '@fastify/cookie';
 import multipart from '@fastify/multipart';
+import fastifyStatic from '@fastify/static';
 import fastifySocketIO from 'fastify-socket.io';
 import type { Server as IOServer } from 'socket.io';
 import { ZodError } from 'zod';
@@ -9,6 +11,8 @@ import { config, COOKIE_NAME } from './config.js';
 import { verifySession } from './plugins/auth.js';
 import { authRoutes } from './modules/auth/routes.js';
 import { sessionRoutes } from './modules/sessions/routes.js';
+import { campaignRoutes } from './modules/campaigns/routes.js';
+import { sceneRoutes } from './modules/scenes/routes.js';
 import { registerGateway } from './realtime/gateway.js';
 
 /** Cria a aplicação (registrada e pronta), sem chamar listen — usada por main() e por testes. */
@@ -18,6 +22,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(cors, { origin: config.webOrigin, credentials: true });
   await app.register(cookie);
   await app.register(multipart, { limits: { fileSize: config.maxUploadMb * 1024 * 1024 } });
+  await app.register(fastifyStatic, { root: resolve(config.uploadDir), prefix: '/uploads/' });
   await app.register(fastifySocketIO, { cors: { origin: config.webOrigin, credentials: true } });
 
   app.addHook('onRequest', async (req) => {
@@ -40,6 +45,8 @@ export async function buildApp(): Promise<FastifyInstance> {
   app.get('/api/health', async () => ({ ok: true }));
   await app.register(authRoutes);
   await app.register(sessionRoutes);
+  await app.register(campaignRoutes);
+  await app.register(sceneRoutes);
 
   await app.ready();
   registerGateway((app as unknown as { io: IOServer }).io);
