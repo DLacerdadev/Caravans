@@ -1,0 +1,105 @@
+/* ==========================================================================
+   Responsividade — Sobrevivendo ao Horror  (mobile-first: ajustes por breakpoint)
+   Breakpoints validados: 360 / 390 / 768 / 1024 / 1440
+   ========================================================================== */
+
+/* --- Medidores: colapsam cedo para não espremer/transbordar em 390px --------- */
+@media (max-width: 520px) {
+  .meters { grid-template-columns: 1fr; }
+}
+@media (min-width: 521px) and (max-width: 767px) {
+  .meters { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+}
+
+/* --- Cabeçalho (appbar): empilha de forma controlada em telas pequenas ------- */
+@media (max-width: 480px) {
+  .appbar { flex-wrap: wrap; row-gap: 10px; }
+  .appbar__nav { width: 100%; justify-content: flex-start; gap: 10px; }
+  .mode-chip { padding: 6px 11px; letter-spacing: .14em; }
+}
+
+/* --- Appbar fixa no topo no celular: mantém a âncora de contexto (o modo) ---- */
+@media (max-width: 679px) {
+  .appbar {
+    position: sticky; top: 0; z-index: 40;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line-on-bg);
+    padding-block: 10px;
+    margin-inline: calc(-1 * clamp(16px, 4vw, 32px));
+    padding-inline: clamp(16px, 4vw, 32px);
+  }
+}
+
+/* --- Cartões empilham; ações viram largura total ---------------------------- */
+@media (max-width: 679px) {
+  .grid-cards { grid-template-columns: 1fr; }
+  .mcard .actions { flex-direction: column; align-items: stretch; }
+  .mcard .actions .btn { width: 100%; }
+  .intent { flex-direction: column; align-items: stretch; }
+  .intent .status { justify-content: center; }
+}
+
+/* --- Abas do caso: faixa rolável horizontal (em vez de quebrar em 2 linhas) -- */
+@media (max-width: 679px) {
+  .tabs { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { flex: 0 0 auto; scroll-snap-align: start; white-space: nowrap; }
+}
+
+/* --- Quadro de investigação: sem rotações no celular (leitura e alvo) -------- */
+@media (max-width: 679px) {
+  .clip, .postit, .dossier { transform: none; }
+  .postit { width: 100%; }
+}
+
+/* --- Página do caso/cena: coluna única no mobile --------------------------- */
+@media (max-width: 767px) {
+  .case-layout { display: flex; flex-direction: column; }
+
+  /* Caso: a ação primária (aside .card.stack) vira barra fixa inferior,
+     no alcance do polegar. Rótulo e texto ficam ocultos para não inchar. */
+  .case-layout > aside.card.stack {
+    position: sticky; bottom: 0; z-index: 30;
+    margin-inline: calc(-1 * clamp(16px, 4vw, 32px));
+    border-radius: 0; border-left: 0; border-right: 0; border-bottom: 0;
+    padding: 12px clamp(16px, 4vw, 32px);
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    box-shadow: 0 -12px 30px -18px rgba(0, 0, 0, .9);
+    gap: 8px;
+  }
+  .case-layout > aside.card.stack > .skill-tab,
+  .case-layout > aside.card.stack > p { display: none; }
+
+  /* Cena: a saída "Retornar à zona segura" fica sempre acessível */
+  html[data-mode="mission"] [data-return] {
+    position: sticky; bottom: 12px; z-index: 30; width: 100%;
+    background: var(--bg); border-color: var(--accent);
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+}
+
+/* --- Tablet (≥ 768px): página do caso em duas colunas --------------------- */
+@media (min-width: 768px) {
+  .case-layout { display: grid; grid-template-columns: 1.4fr .9fr; gap: var(--sp-6); align-items: start; }
+}
+
+/* --- Desktop (≥ 1024px): mais respiro -------------------------------------- */
+@media (min-width: 1024px) {
+  .shell { padding-top: clamp(28px, 4vw, 56px); }
+}
+
+/* --- Telas largas (≥ 1440px): limita a largura para leitura confortável ----- */
+@media (min-width: 1440px) {
+  .shell { max-width: 1080px; }
+}
+
+/* --- Ergonomia de toque: alvos mínimos só em ponteiro grosseiro ------------- */
+@media (pointer: coarse) {
+  .btn { min-height: var(--tap-min); }
+  .btn--sm { min-height: var(--tap-min); padding: 0 16px; }
+  .tab { min-height: var(--tap-min); display: inline-flex; align-items: center; }
+  .tabs { gap: 8px; }
+  .clue.locked { padding: 13px 0; }
+  .qfield .blank { padding: 12px 4px; min-height: var(--tap-min); font-size: 1.15rem; }
+}

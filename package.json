@@ -1,0 +1,24 @@
+{
+  "name": "caravans",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sobrevivendo ao Horror — Motor Narrativo Operacional",
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @caravans/api --filter @caravans/web dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "db:migrate": "pnpm --filter @caravans/api db:migrate",
+    "db:seed": "pnpm --filter @caravans/api db:seed",
+    "db:reset": "pnpm --filter @caravans/api db:reset"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  }
+}

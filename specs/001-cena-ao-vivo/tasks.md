@@ -12,13 +12,13 @@ Convenção de pacotes: `apps/web`, `apps/api`, `packages/shared` (import como `
 
 ## Phase 1: Setup (inicialização do monorepo)
 
-- [ ] T001 Criar raiz do monorepo: `pnpm-workspace.yaml`, `package.json` raiz (scripts `dev`/`build`/`test`/`lint`/`db:*`) e `tsconfig.base.json`
-- [ ] T002 [P] Adicionar `docker-compose.yml` (PostgreSQL 16) e `.env.example` na raiz (sem segredos reais)
-- [ ] T003 [P] Scaffold de `packages/shared` (package.json `@caravans/shared`, tsconfig, Zod, Vitest) com `packages/shared/src/index.ts`
-- [ ] T004 [P] Scaffold de `apps/api` (Fastify, `@fastify/socket.io`, `@fastify/cookie`, `@fastify/multipart`, Prisma, argon2, Vitest) com `apps/api/src/server.ts` placeholder
-- [ ] T005 [P] Scaffold de `apps/web` (Vite + React + TS, react-router-dom, @tanstack/react-query, zustand, socket.io-client) com `apps/web/src/main.tsx` placeholder
-- [ ] T006 [P] Portar tokens/CSS do protótipo para `apps/web/src/styles/` (tokens, reset, components, layout, responsive) preservando "O Limiar"
-- [ ] T007 [P] Configurar ESLint + Prettier na raiz e por pacote
+- [x] T001 Criar raiz do monorepo: `pnpm-workspace.yaml`, `package.json` raiz (scripts `dev`/`build`/`test`/`lint`/`db:*`) e `tsconfig.base.json`
+- [x] T002 [P] Adicionar `docker-compose.yml` (PostgreSQL 16) e `.env.example` na raiz (sem segredos reais)
+- [x] T003 [P] Scaffold de `packages/shared` (package.json `@caravans/shared`, tsconfig, Zod, Vitest) com `packages/shared/src/index.ts`
+- [x] T004 [P] Scaffold de `apps/api` (Fastify, `@fastify/socket.io`, `@fastify/cookie`, `@fastify/multipart`, Prisma, argon2, Vitest) com `apps/api/src/server.ts` placeholder
+- [x] T005 [P] Scaffold de `apps/web` (Vite + React + TS, react-router-dom, @tanstack/react-query, zustand, socket.io-client) com `apps/web/src/main.tsx` placeholder
+- [x] T006 [P] Portar tokens/CSS do protótipo para `apps/web/src/styles/` (tokens, reset, components, layout, responsive) preservando "O Limiar"
+- [x] T007 [P] Configurar ESLint + Prettier na raiz e por pacote
 
 ---
 

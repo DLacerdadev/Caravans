@@ -9,6 +9,14 @@ build/
 out/
 .next/
 .cache/
+*.tsbuildinfo
+
+# Uploads (imagens de cena em dev)
+apps/api/uploads/*
+!apps/api/uploads/.gitkeep
+
+# Prisma
+apps/api/prisma/*.db
 
 # Logs
 *.log

@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: caravans-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: caravans
+      POSTGRES_PASSWORD: caravans
+      POSTGRES_DB: caravans
+    ports:
+      - "5432:5432"
+    volumes:
+      - caravans-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U caravans"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  caravans-db-data:
